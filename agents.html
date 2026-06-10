@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>by9am — Agents</title>
+<meta name="description" content="The agents that work for you by 9am — inbox, calendar, research, family, and EagleBot, the dev-team agent for your company Space." />
+<meta property="og:title" content="by9am — Agents" />
+<meta property="og:description" content="One quiet mind, many hands. Meet the agents that do the work before you ask — across your Personal, Family and Business Spaces." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='8' fill='white'/%3E%3Ccircle cx='50' cy='50' r='26' fill='none' stroke='white' stroke-opacity='.5' stroke-width='2'/%3E%3Ccircle cx='50' cy='50' r='44' fill='none' stroke='white' stroke-opacity='.2' stroke-width='2'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050505; --ink:#f5f5f3; --muted:#8a8a86; --faint:#5a5a57;
+    --line:rgba(255,255,255,.10); --line-soft:rgba(255,255,255,.06);
+    --accent:#e8e4dc; --gold:#c2a878; --gold-line:rgba(194,168,120,.30); --glow:rgba(232,228,220,.13);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-weight:400; line-height:1.5; -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility; overflow-x:hidden;
+  }
+  body::before{
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(900px 520px at 50% -8%, var(--glow), transparent 60%),
+      radial-gradient(1200px 800px at 50% 120%, rgba(255,255,255,.03), transparent 55%);
+  }
+  .wrap{position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 28px}
+
+  /* ── nav (shared house style) ── */
+  nav{display:flex; align-items:center; justify-content:space-between; padding:30px 0 0}
+  .brand{display:flex; align-items:center; gap:11px; letter-spacing:.02em; text-decoration:none; color:var(--ink)}
+  .brand .mark{width:22px; height:22px}
+  .brand b{font-weight:600; font-size:16px; letter-spacing:.04em}
+  .nav-right{display:flex; align-items:center; gap:20px; flex-wrap:wrap; justify-content:flex-end}
+  .nav-link{font-size:13px; color:var(--muted); text-decoration:none; letter-spacing:.02em; transition:.25s}
+  .nav-link:hover{color:var(--ink)}
+  .nav-link.here{color:var(--ink)}
+  .nav-cta{font-size:13px; color:var(--muted); text-decoration:none; border:1px solid var(--line);
+    padding:8px 16px; border-radius:999px; transition:.25s; backdrop-filter:blur(6px)}
+  .nav-cta:hover{color:var(--ink); border-color:rgba(255,255,255,.28)}
+
+  /* ── header ── */
+  .head{text-align:center; padding:96px 0 44px; max-width:680px; margin:0 auto}
+  .eyebrow{font-size:11px; letter-spacing:.32em; text-transform:uppercase; color:var(--gold);
+    margin-bottom:26px; font-weight:500}
+  .eyebrow .dot{display:inline-block; width:5px; height:5px; border-radius:50%;
+    background:var(--gold); box-shadow:0 0 12px var(--gold); margin-right:9px; vertical-align:middle; animation:breathe 3s ease-in-out infinite}
+  @keyframes breathe{0%,100%{opacity:.45}50%{opacity:1}}
+  .head h1{font-family:'Instrument Serif',Georgia,serif; font-weight:400; letter-spacing:-.01em;
+    font-size:clamp(40px,7vw,76px); line-height:1.0; margin-bottom:20px}
+  .head h1 .it{font-style:italic; color:var(--accent)}
+  .head p{color:var(--muted); font-weight:300; font-size:clamp(16px,2.1vw,18.5px); line-height:1.62}
+
+  /* ── filter chips ── */
+  .filters{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; padding:0 0 44px}
+  .chip{font-family:inherit; font-size:13px; letter-spacing:.02em; color:var(--muted); cursor:pointer;
+    background:rgba(255,255,255,.02); border:1px solid var(--line); border-radius:999px;
+    padding:8px 18px; transition:.25s; backdrop-filter:blur(6px)}
+  .chip:hover{color:var(--ink); border-color:rgba(255,255,255,.28)}
+  .chip.on{color:#0a0a0a; background:var(--ink); border-color:var(--ink); font-weight:500}
+  .chip .n{opacity:.55; font-size:11.5px; margin-left:5px}
+
+  /* ── agent grid ── */
+  .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding-bottom:26px}
+  .agent{display:flex; flex-direction:column; gap:10px; text-decoration:none; color:var(--ink);
+    border:1px solid var(--line-soft); border-radius:18px; padding:24px 22px 20px;
+    background:rgba(255,255,255,.02); transition:.25s; animation:rise .4s ease both}
+  .agent:hover{background:rgba(255,255,255,.04); border-color:var(--line); transform:translateY(-2px)}
+  .agent.hide{display:none}
+  @keyframes rise{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:none}}
+  .a-top{display:flex; align-items:center; justify-content:space-between; gap:10px}
+  .a-icon{font-size:21px; line-height:1; filter:grayscale(35%)}
+  .a-tags{display:flex; gap:6px}
+  .a-tag{font-size:10px; letter-spacing:.16em; text-transform:uppercase; font-weight:500;
+    color:var(--faint); border:1px solid var(--line-soft); border-radius:999px; padding:3.5px 9px}
+  .a-tag.personal{color:#a8bfa8; border-color:rgba(168,191,168,.25)}
+  .a-tag.family{color:#c4a8bf; border-color:rgba(196,168,191,.25)}
+  .a-tag.business{color:#9fb3c8; border-color:rgba(159,179,200,.28)}
+  .a-tag.status{color:var(--gold); border-color:var(--gold-line)}
+  .agent h3{font-family:'Instrument Serif',serif; font-weight:400; font-size:23px; letter-spacing:.005em}
+  .agent p{color:var(--muted); font-weight:300; font-size:14px; line-height:1.6; flex:1}
+  .a-more{font-size:12.5px; color:var(--gold); opacity:0; transition:.25s}
+  .agent:hover .a-more{opacity:.9}
+  .agent.feature{border-color:var(--gold-line); background:rgba(194,168,120,.045)}
+  .agent.feature:hover{background:rgba(194,168,120,.08)}
+
+  .empty{text-align:center; color:var(--faint); font-weight:300; padding:40px 0 70px; display:none}
+
+  /* ── EagleBot spotlight ── */
+  .spot{max-width:920px; margin:60px auto 90px; border:1px solid var(--gold-line); border-radius:22px;
+    padding:46px 44px 40px; background:linear-gradient(180deg, rgba(194,168,120,.055), rgba(255,255,255,.015) 55%);
+    position:relative; overflow:hidden}
+  .spot::before{content:''; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(640px 240px at 18% -10%, rgba(194,168,120,.12), transparent 65%)}
+  .spot .eyebrow{margin-bottom:18px}
+  .spot h2{font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(32px,4.6vw,46px);
+    line-height:1.05; margin-bottom:14px}
+  .spot h2 .it{font-style:italic; color:var(--accent)}
+  .spot .sub{color:var(--muted); font-weight:300; font-size:16.5px; line-height:1.64; max-width:64ch; margin-bottom:34px}
+  .spot .sub b{color:var(--ink); font-weight:500}
+  .spot-cols{display:grid; grid-template-columns:repeat(3,1fr); gap:26px}
+  .sc h4{font-size:11px; letter-spacing:.26em; text-transform:uppercase; color:var(--gold);
+    font-weight:500; margin-bottom:12px}
+  .sc ul{list-style:none}
+  .sc li{color:var(--muted); font-weight:300; font-size:14px; line-height:1.6; padding:7px 0 7px 18px;
+    position:relative; border-top:1px solid var(--line-soft)}
+  .sc li:first-child{border-top:0}
+  .sc li::before{content:''; position:absolute; left:2px; top:15px; width:5px; height:5px;
+    border-radius:50%; background:var(--gold); opacity:.55}
+  .sc li b{color:var(--ink); font-weight:500}
+  .spot-foot{margin-top:34px; padding-top:24px; border-top:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap}
+  .spot-foot .pos{font-family:'Instrument Serif',serif; font-style:italic; font-size:19px; color:var(--accent)}
+  .spot-foot a{font-size:13px; color:var(--muted); text-decoration:none; border:1px solid var(--line);
+    padding:9px 18px; border-radius:999px; transition:.25s; white-space:nowrap}
+  .spot-foot a:hover{color:var(--ink); border-color:rgba(255,255,255,.28)}
+
+  footer{border-top:1px solid var(--line-soft); padding:30px 0 46px; max-width:1080px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+    color:var(--faint); font-size:12.5px}
+  footer a{color:var(--muted); text-decoration:none}
+  footer a:hover{color:var(--ink)}
+
+  @media (max-width:880px){
+    .grid{grid-template-columns:repeat(2,1fr)}
+    .spot-cols{grid-template-columns:1fr}
+    .spot{padding:36px 28px 32px}
+  }
+  @media (max-width:720px){
+    nav{flex-direction:column; gap:16px; padding:22px 0 0}
+    .nav-right{gap:14px}
+    .head{padding:64px 0 32px}
+  }
+  @media (max-width:560px){ .grid{grid-template-columns:1fr} }
+  @media (prefers-reduced-motion:reduce){.eyebrow .dot{animation:none} .agent{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav>
+    <a class="brand" href="index.html">
+      <svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="7" fill="#f5f5f3"/>
+        <circle cx="50" cy="50" r="24" fill="none" stroke="#f5f5f3" stroke-opacity=".45" stroke-width="2"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#f5f5f3" stroke-opacity=".18" stroke-width="2"/>
+      </svg>
+      <b>by9am</b>
+    </a>
+    <div class="nav-right">
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="faq.html">How it works</a>
+      <a class="nav-link here" href="agents.html">Agents</a>
+      <a class="nav-link" href="family-hub.html">Family Space</a>
+      <a class="nav-link" href="demo.html">Live demo</a>
+      <a class="nav-link" href="components.html">Building blocks</a>
+      <a class="nav-link" href="blog.html">Blog</a>
+      <a class="nav-cta" href="index.html#waitlist">Request access</a>
+    </div>
+  </nav>
+
+  <header class="head">
+    <div class="eyebrow"><span class="dot"></span>Agents</div>
+    <h1>One quiet mind, <span class="it">many hands.</span></h1>
+    <p>by9am is one orchestrator over one memory — and these are its hands. Every agent reads the same store, gets only the reach you grant, and <b>drafts rather than sends</b>. Filter by the Space each one works in.</p>
+  </header>
+
+  <div class="filters" id="filters" role="tablist" aria-label="Filter agents by Space">
+    <button class="chip on" data-f="all">All</button>
+    <button class="chip" data-f="personal">Personal</button>
+    <button class="chip" data-f="family">Family</button>
+    <button class="chip" data-f="business">Business</button>
+  </div>
+
+  <section class="grid" id="grid"></section>
+  <div class="empty" id="empty">Nothing here yet — soon.</div>
+
+  <!-- ── EagleBot spotlight ── -->
+  <section class="spot" id="eaglebot">
+    <div class="eyebrow"><span class="dot"></span>Business Space · flagship agent</div>
+    <h2>EagleBot — <span class="it">a dev-team member</span> in your company Space.</h2>
+    <p class="sub">EagleBot lives in your company's Slack and works like a colleague. Ask it anything about your product and it answers from <b>your own knowledge</b> — specs, Notion, analytics, designs. Assign it a task and it triages the work into a reviewed development plan. Approve the plan and it <b>ships the pull request</b>: isolated specialist sessions write the code in clean workspaces, open the PR, and report back in the thread — with every step traced and costed. Born inside GitLaw, where it runs the engineering team's day-to-day in production.</p>
+
+    <div class="spot-cols">
+      <div class="sc">
+        <h4>What it does</h4>
+        <ul>
+          <li><b>Answers from company knowledge</b> — docs, tickets, analytics, Figma — in the thread where you asked.</li>
+          <li><b>Triages tasks into plans</b> — assign a ticket; it gathers context, classifies the work, and drafts a development plan for review.</li>
+          <li><b>Ships real PRs</b> — delegates to specialist sessions that write code in isolated workspaces and open the pull request.</li>
+          <li><b>Shows its work</b> — every query traced: tools used, agents spawned, tokens spent.</li>
+        </ul>
+      </div>
+      <div class="sc">
+        <h4>How it fits by9am</h4>
+        <ul>
+          <li><b>Lives in your Business Space</b> — reads and writes the Space's memory; your Personal and Family Spaces stay invisible to it.</li>
+          <li><b>Scoped like any agent</b> — you grant exactly the tools and repos it may touch, nothing more.</li>
+          <li><b>Drafts, never fires</b> — plans wait for your sign-off and PRs wait for your review. Nothing merges itself.</li>
+          <li><b>Same one mind</b> — the orchestrator delegates to it like every other agent, so its work lands in your morning brief.</li>
+        </ul>
+      </div>
+      <div class="sc">
+        <h4>How we position it</h4>
+        <ul>
+          <li><b>A team member, not a tool</b> — priced per seat on the Business tier, because that's what it replaces.</li>
+          <li><b>Proven, not promised</b> — battle-tested in production at GitLaw before it ever became a product.</li>
+          <li><b>Sovereign by design</b> — your codebase, tickets and docs stay in your single-tenant Space. No pooled SaaS graph ever sees them.</li>
+          <li><b>The reason to open a Business Space</b> — land Personal, expand to the company.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="spot-foot">
+      <span class="pos">"The first engineer at your company who never sleeps."</span>
+      <a href="index.html#waitlist">Bring EagleBot to your team →</a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <span>by9am — early access.</span>
+  <span><a href="index.html">Home</a> · <a href="faq.html">How it works</a> · <a href="agents.html">Agents</a> · <a href="blog.html">Blog</a> · <span id="yr"></span></span>
+</footer>
+
+<script>
+  // Add an agent: append to AGENTS (type: personal | family | business).
+  // href is optional — cards without one render as static tiles.
+  const AGENTS = [
+    {
+      icon:'🦅', name:'EagleBot', type:'business', status:'In production',
+      desc:'The dev-team agent. Answers from your company knowledge, triages tickets into plans, and ships pull requests from Slack. Proven in production at GitLaw.',
+      href:'#eaglebot', feature:true
+    },
+    {
+      icon:'📥', name:'Inbox', type:'personal', status:'Beta',
+      desc:'Clears your inbox overnight — triages what matters, drafts the replies in your voice, and queues them for one-tap approval.'
+    },
+    {
+      icon:'📅', name:'Calendar', type:'personal', status:'Beta',
+      desc:'Preps every meeting before you walk in — who you’re meeting, what you owe them, what to ask — and guards your focus time.'
+    },
+    {
+      icon:'🔁', name:'Follow-up Chaser', type:'personal', status:'Beta',
+      desc:'Tracks every open loop — promises made to you and by you — and chases them politely before they go stale.'
+    },
+    {
+      icon:'🔬', name:'Research', type:'personal', status:'Beta',
+      desc:'Hand it a question at night; wake to a sourced, fact-checked brief. Deep multi-source research while you sleep.'
+    },
+    {
+      icon:'🫀', name:'Health', type:'personal', status:'Beta',
+      desc:'Reads your wearables and journal, spots the trends — sleep, training, weight, mood — and tells you what’s actually changing.'
+    },
+    {
+      icon:'🤝', name:'People', type:'personal', status:'Beta',
+      desc:'A personal CRM that maintains itself — remembers everyone you know from your conversations, and nudges you before the birthday, not after.'
+    },
+    {
+      icon:'🏠', name:'Family Hub', type:'family', status:'Beta',
+      desc:'The shared brain of the household — one calendar, meals, shopping and chores, on the kitchen wall and in everyone’s pocket.',
+      href:'family-hub.html'
+    },
+    {
+      icon:'🎒', name:'School & Activities', type:'family', status:'Beta',
+      desc:'Scans the school-mail flood for the dates that matter — matches, plays, mufti days — and proposes them to the family calendar.'
+    },
+  ];
+
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  const TYPE_LABEL = {personal:'Personal', family:'Family', business:'Business'};
+
+  grid.innerHTML = AGENTS.map(a => `
+    <a class="agent${a.feature ? ' feature' : ''}" data-type="${a.type}" href="${a.href || '#'}" ${a.href ? '' : 'onclick="return false"'}>
+      <div class="a-top">
+        <span class="a-icon">${a.icon}</span>
+        <span class="a-tags">
+          <span class="a-tag ${a.type}">${TYPE_LABEL[a.type]}</span>
+          <span class="a-tag status">${a.status}</span>
+        </span>
+      </div>
+      <h3>${a.name}</h3>
+      <p>${a.desc}</p>
+      ${a.href ? '<span class="a-more">Learn more →</span>' : ''}
+    </a>`).join('');
+
+  // counts on chips
+  document.querySelectorAll('.chip').forEach(c => {
+    const f = c.dataset.f;
+    const n = f === 'all' ? AGENTS.length : AGENTS.filter(a => a.type === f).length;
+    c.insertAdjacentHTML('beforeend', `<span class="n">${n}</span>`);
+  });
+
+  // filtering
+  document.getElementById('filters').addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if(!chip) return;
+    document.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === chip));
+    const f = chip.dataset.f;
+    let shown = 0;
+    document.querySelectorAll('.agent').forEach(card => {
+      const show = f === 'all' || card.dataset.type === f;
+      card.classList.toggle('hide', !show);
+      if(show) shown++;
+    });
+    empty.style.display = shown ? 'none' : 'block';
+    // spotlight follows the Business filter
+    document.getElementById('eaglebot').style.display = (f === 'all' || f === 'business') ? '' : 'none';
+  });
+
+  document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
