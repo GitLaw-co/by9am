@@ -1,0 +1,988 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>by9am — How it works</title>
+<meta name="description" content="How by9am works, in five pictures: your data flowing into one wiki-style memory and back out as action, installable and custom skills you scope tool-by-tool, an assistant that works overnight, a dashboard that assembles itself from the skills you enable, a private VM that's actually yours — hosted anywhere, your database, reached from your phone, your Mac and anywhere — and Spaces (personal, family, business) that share modules by reference and roll up into one view." />
+<meta property="og:title" content="by9am — How it works" />
+<meta property="og:description" content="The whole idea in four diagrams: data in / action out, work done overnight, a loop you command, and a private home base you reach from anywhere." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='8' fill='white'/%3E%3Ccircle cx='50' cy='50' r='26' fill='none' stroke='white' stroke-opacity='.5' stroke-width='2'/%3E%3Ccircle cx='50' cy='50' r='44' fill='none' stroke='white' stroke-opacity='.2' stroke-width='2'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050505; --ink:#f5f5f3; --muted:#8a8a86; --faint:#5a5a57;
+    --line:rgba(255,255,255,.10); --line-soft:rgba(255,255,255,.06);
+    --accent:#e8e4dc; --gold:#c2a878; --gold-line:rgba(194,168,120,.30); --glow:rgba(232,228,220,.13);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-weight:400; line-height:1.5; -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility; overflow-x:hidden;
+  }
+  body::before{
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(900px 520px at 50% -8%, var(--glow), transparent 60%),
+      radial-gradient(1200px 800px at 50% 120%, rgba(255,255,255,.03), transparent 55%);
+  }
+  .wrap{position:relative; z-index:1; max-width:860px; margin:0 auto; padding:0 28px}
+
+  /* ── nav ── */
+  nav{display:flex; align-items:center; justify-content:space-between; padding:30px 0 0}
+  .brand{display:flex; align-items:center; gap:11px; letter-spacing:.02em; text-decoration:none; color:var(--ink)}
+  .brand .mark{width:22px; height:22px}
+  .brand b{font-weight:600; font-size:16px; letter-spacing:.04em}
+  .nav-right{display:flex; align-items:center; gap:20px}
+  .nav-link{font-size:13px; color:var(--muted); text-decoration:none; letter-spacing:.02em; transition:.25s}
+  .nav-link:hover{color:var(--ink)}
+  .nav-cta{font-size:13px; color:var(--muted); text-decoration:none; border:1px solid var(--line);
+    padding:8px 16px; border-radius:999px; transition:.25s; backdrop-filter:blur(6px)}
+  .nav-cta:hover{color:var(--ink); border-color:rgba(255,255,255,.28)}
+
+  /* ── head ── */
+  .head{padding:74px 0 30px; max-width:680px}
+  .eyebrow{font-size:11px; letter-spacing:.32em; text-transform:uppercase; color:var(--gold);
+    margin-bottom:26px; font-weight:500}
+  .eyebrow .dot{display:inline-block; width:5px; height:5px; border-radius:50%;
+    background:var(--gold); box-shadow:0 0 12px var(--gold); margin-right:9px; vertical-align:middle;
+    animation:breathe 3s ease-in-out infinite}
+  @keyframes breathe{0%,100%{opacity:.45}50%{opacity:1}}
+  h1{font-family:'Instrument Serif',Georgia,serif; font-weight:400; letter-spacing:-.01em;
+    font-size:clamp(40px,6.5vw,68px); line-height:1.0; margin-bottom:22px}
+  h1 .it{font-style:italic; color:var(--accent)}
+  .head p{color:var(--muted); font-size:17px; font-weight:300; line-height:1.62; max-width:580px}
+  .head p b{color:var(--ink); font-weight:500}
+
+  /* ── diagrams ── */
+  .diagrams{padding:18px 0 30px}
+  .dgm{padding:40px 0 8px; border-top:1px solid var(--line-soft)}
+  .dgm:first-child{border-top:0; padding-top:8px}
+  .dgm-n{font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--gold); font-weight:500}
+  .dgm-h{font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(26px,4.2vw,40px);
+    line-height:1.04; letter-spacing:-.005em; margin:13px 0 10px}
+  .dgm-h .it{font-style:italic; color:var(--accent)}
+  .dgm-dek{color:var(--muted); font-weight:300; font-size:16px; line-height:1.62; max-width:600px; margin-bottom:26px}
+  .dgm-dek b{color:var(--ink); font-weight:500}
+  .dgm-stage{border:1px solid var(--line-soft); border-radius:18px; padding:26px 22px;
+    background:linear-gradient(180deg, rgba(255,255,255,.022), rgba(255,255,255,.005)); overflow:hidden}
+  .diagram{width:100%; height:auto; display:block}
+  .dgm-cap{color:var(--faint); font-size:13px; font-weight:300; line-height:1.6; margin-top:16px; max-width:600px}
+  .dgm-cap b{color:var(--muted); font-weight:400}
+  svg text{font-family:'Inter',-apple-system,sans-serif}
+  .svg-serif{font-family:'Instrument Serif',serif}
+  .svg-breathe{animation:breathe 3s ease-in-out infinite}
+
+  /* ── pipeline flow (diagram 01) ── */
+  .pl{display:flex; align-items:stretch; gap:0}
+  .pl-stage{flex:1; min-width:0; border:1px solid var(--line); border-radius:14px; padding:16px 15px;
+    background:rgba(255,255,255,.025); display:flex; flex-direction:column}
+  .pl-stage.key{border-color:var(--gold-line); background:rgba(194,168,120,.06); animation:glowgold 4s ease-in-out infinite}
+  .pl-stage.brain{border-color:rgba(232,228,220,.22); background:rgba(232,228,220,.045)}
+  .pl-stage.you{flex:.62; align-items:center; justify-content:center; text-align:center}
+  @keyframes glowgold{0%,100%{box-shadow:0 0 0 0 rgba(194,168,120,0)}50%{box-shadow:0 0 26px -6px rgba(194,168,120,.4)}}
+  .pl-k{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); font-weight:500; margin-bottom:6px}
+  .pl-sub{font-size:11px; color:var(--muted); font-weight:300; margin-bottom:11px; line-height:1.45}
+  .pl-chips{display:flex; flex-direction:column; gap:7px}
+  .pl-chip{font-size:12.5px; color:var(--ink); border:1px solid var(--line); border-radius:8px;
+    padding:7px 10px; background:rgba(255,255,255,.03); text-align:center}
+  .pl-chip.g{border-color:var(--gold-line); color:var(--accent)}
+  .pl-chip.ghost{color:var(--faint); border-style:dashed}
+  .pl-mark{display:flex; flex-direction:column; align-items:center; text-align:center; margin-bottom:10px}
+  .pl-mark svg{width:30px; height:30px}
+  .pl-mark .t{font-family:'Instrument Serif',serif; font-size:19px; margin-top:6px}
+  .pl-mark .s{font-size:11px; color:var(--muted); font-weight:300; margin-top:1px}
+  .pl-you-t{font-family:'Instrument Serif',serif; font-size:24px}
+  .pl-you-s{font-size:11.5px; color:var(--muted); font-weight:300; margin-top:4px}
+  .pl-ar{flex:none; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 7px; gap:6px}
+  .pl-track{position:relative; width:34px; height:2px; border-radius:2px; overflow:hidden;
+    background:linear-gradient(90deg, transparent, var(--gold-line) 30%, var(--gold-line) 70%, transparent)}
+  .pl-track i{position:absolute; top:50%; left:0; width:5px; height:5px; margin-top:-2.5px; border-radius:50%;
+    background:var(--gold); box-shadow:0 0 8px var(--gold); animation:plflow 2.2s linear infinite}
+  @keyframes plflow{0%{left:-12%; opacity:0}18%{opacity:1}82%{opacity:1}100%{left:108%; opacity:0}}
+  .pl-ar .c{font-size:9.5px; color:var(--faint); text-align:center; max-width:60px; line-height:1.3; letter-spacing:.02em}
+
+  /* ── scroll reveal (agentmail-style staggered fade-in) ── */
+  .dgm, .dgm-stage{will-change:opacity, transform}
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1; transform:none}
+
+  @media (max-width:760px){
+    .pl{flex-direction:column}
+    .pl-stage.you{flex:1}
+    .pl-ar{flex-direction:row; padding:9px 0}
+    .pl-track{transform:rotate(90deg)}
+    .pl-ar .c{max-width:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .svg-breathe,.eyebrow .dot,.pl-stage.key,.pl-track i{animation:none}
+    .reveal{opacity:1; transform:none; transition:none}
+    svg [class*="anim"]{display:none}
+  }
+
+  /* ── faq ── */
+  .faq-wrap{padding:30px 0 0}
+  .faq-head{max-width:600px; padding:34px 0 6px; border-top:1px solid var(--line-soft)}
+  .faq-head .eyebrow{margin-bottom:18px}
+  .faq-head h2{font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(28px,4.2vw,44px);
+    line-height:1.04; margin-bottom:10px}
+  .faq-head p{color:var(--muted); font-weight:300; font-size:16px; line-height:1.6}
+  .faq{padding:18px 0 40px}
+  .faq details{border-top:1px solid var(--line-soft); padding:0}
+  .faq details:last-child{border-bottom:1px solid var(--line-soft)}
+  .faq summary{list-style:none; cursor:pointer; padding:26px 44px 26px 0; position:relative;
+    font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(20px,2.8vw,25px);
+    letter-spacing:.005em; color:var(--ink); transition:.2s}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary:hover{color:var(--accent)}
+  .faq summary::after{content:'+'; position:absolute; right:6px; top:50%; transform:translateY(-50%);
+    font-family:'Inter',sans-serif; font-weight:300; font-size:26px; color:var(--gold); transition:transform .25s, color .2s}
+  .faq details[open] summary::after{content:'–'; transform:translateY(-50%) rotate(0)}
+  .faq .a{padding:0 44px 28px 0; color:var(--muted); font-weight:300; font-size:15.5px; line-height:1.66}
+  .faq .a p+p{margin-top:13px}
+  .faq .a b{color:var(--accent); font-weight:500}
+  .faq .a .tag{display:inline-block; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--gold); font-weight:500; margin-bottom:12px}
+  .faq .a ul{margin:12px 0 0; padding-left:18px}
+  .faq .a li{margin:6px 0}
+
+  /* ── cta band ── */
+  .cta{text-align:center; padding:46px 32px 52px; margin:18px 0 70px;
+    border:1px solid var(--gold-line); border-radius:20px;
+    background:linear-gradient(180deg, rgba(194,168,120,.06), rgba(255,255,255,.015))}
+  .cta h2{font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(26px,4vw,40px);
+    line-height:1.06; margin-bottom:12px}
+  .cta h2 .it{font-style:italic; color:var(--gold)}
+  .cta p{color:var(--muted); font-weight:300; font-size:15.5px; max-width:460px; margin:0 auto 26px}
+  .btn{display:inline-block; font-size:14.5px; font-weight:600; color:#0a0a0a; background:var(--ink);
+    text-decoration:none; padding:13px 26px; border-radius:10px; transition:.2s}
+  .btn:hover{background:#fff; transform:translateY(-1px); box-shadow:0 10px 30px -12px rgba(255,255,255,.4)}
+
+  footer{border-top:1px solid var(--line-soft); padding:30px 0 46px;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+    color:var(--faint); font-size:12.5px}
+  footer a{color:var(--muted); text-decoration:none}
+  footer a:hover{color:var(--ink)}
+
+  /* ── skills coverflow (diagram 02) ── */
+  .deck{position:relative; height:330px; perspective:1500px; user-select:none; touch-action:pan-y}
+  .cf{position:absolute; inset:0; transform-style:preserve-3d}
+  .card{position:absolute; top:50%; left:50%; width:204px; height:286px; margin:-143px 0 0 -102px;
+    border-radius:18px; padding:20px 18px; cursor:pointer; backface-visibility:hidden;
+    border:1px solid var(--gold-line);
+    background:linear-gradient(165deg, rgba(46,43,37,.92), rgba(12,12,11,.94));
+    box-shadow:0 0 0 1px rgba(194,168,120,.12), 0 30px 60px -24px rgba(0,0,0,.85);
+    transition:transform .55s cubic-bezier(.2,.7,.2,1), opacity .55s, box-shadow .4s, border-color .4s;
+    display:flex; flex-direction:column}
+  .card::before{content:''; position:absolute; inset:0; border-radius:18px; pointer-events:none;
+    background:linear-gradient(160deg, rgba(232,228,220,.06), transparent 42%); opacity:.7}
+  .card.active{border-color:rgba(194,168,120,.65);
+    box-shadow:0 0 44px -8px rgba(194,168,120,.45), 0 0 0 1px rgba(194,168,120,.4), 0 30px 70px -24px rgba(0,0,0,.9)}
+  .card .ic{width:30px; height:30px; color:var(--gold); margin-bottom:auto}
+  .card .ic svg{width:30px; height:30px; display:block}
+  .card h4{font-family:'Instrument Serif',serif; font-weight:400; font-size:22px; margin:14px 0 7px; letter-spacing:.005em}
+  .card .cap{font-size:12px; color:var(--muted); font-weight:300; line-height:1.45}
+  .card .foot{margin-top:14px; font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint)}
+  .card.make{border-style:dashed; background:linear-gradient(165deg, rgba(194,168,120,.14), rgba(12,12,11,.94))}
+  .card.make .ic, .card.community .ic{color:var(--accent)}
+  .card .pill{position:absolute; top:16px; right:16px; font-size:9.5px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--gold); border:1px solid var(--gold-line); border-radius:999px; padding:3px 8px}
+
+  .deck-nav{display:flex; align-items:center; justify-content:center; gap:18px; margin-top:18px}
+  .deck-btn{width:40px; height:40px; border-radius:50%; border:1px solid var(--line); background:rgba(255,255,255,.03);
+    color:var(--ink); font-size:17px; cursor:pointer; transition:.2s; display:flex; align-items:center; justify-content:center}
+  .deck-btn:hover{border-color:rgba(194,168,120,.5); background:rgba(194,168,120,.08)}
+  .deck-dots{display:flex; gap:7px}
+  .deck-dots b{width:6px; height:6px; border-radius:50%; background:var(--faint); cursor:pointer; transition:.25s}
+  .deck-dots b.on{background:var(--gold); box-shadow:0 0 8px var(--gold); width:18px; border-radius:3px}
+
+  .skill-detail{margin-top:22px; border:1px solid var(--line-soft); border-radius:16px; padding:22px 24px;
+    background:rgba(255,255,255,.022); display:flex; gap:22px; align-items:flex-start; flex-wrap:wrap}
+  .skill-detail .sd-main{flex:1; min-width:240px}
+  .skill-detail h3{font-family:'Instrument Serif',serif; font-weight:400; font-size:24px; margin-bottom:6px}
+  .skill-detail .sd-desc{color:var(--muted); font-weight:300; font-size:14px; line-height:1.55; margin-bottom:14px}
+  .sd-k{font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); font-weight:500; margin-bottom:9px}
+  .sd-tools{display:flex; flex-wrap:wrap; gap:8px}
+  .sd-tool{font-size:12.5px; color:var(--accent); border:1px solid var(--gold-line); border-radius:8px; padding:6px 11px; background:rgba(194,168,120,.05)}
+  .sd-tool .x{color:var(--gold); margin-right:5px}
+  .sd-side{flex:none; display:flex; flex-direction:column; align-items:flex-end; gap:10px; min-width:150px}
+  .sd-toggle{display:inline-flex; align-items:center; gap:9px; cursor:pointer; font-size:13px; color:var(--muted);
+    border:1px solid var(--line); border-radius:999px; padding:8px 14px; transition:.25s}
+  .sd-toggle .sw{width:30px; height:17px; border-radius:999px; background:rgba(255,255,255,.12); position:relative; transition:.25s; flex:none}
+  .sd-toggle .sw::after{content:''; position:absolute; top:2px; left:2px; width:13px; height:13px; border-radius:50%; background:var(--ink); transition:.25s}
+  .sd-toggle.on{color:var(--accent); border-color:rgba(194,168,120,.5)}
+  .sd-toggle.on .sw{background:var(--gold)}
+  .sd-toggle.on .sw::after{left:15px; background:#0a0a0a}
+  .sd-note{font-size:11.5px; color:var(--faint); text-align:right; max-width:180px; line-height:1.5}
+
+  /* ── live dashboard (diagram 04) ── */
+  .dash-top{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; flex-wrap:wrap}
+  .dash-top .em{font-family:'Instrument Serif',serif; font-size:19px}
+  .dash-live{display:inline-flex; align-items:center; gap:7px; font-size:11px; color:var(--muted); letter-spacing:.04em}
+  .dash-live i{width:7px; height:7px; border-radius:50%; background:#9ad99a; box-shadow:0 0 9px #9ad99a; animation:breathe 2.2s ease-in-out infinite}
+  .stoggles{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px}
+  .stog{font-size:12.5px; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:7px 13px;
+    cursor:pointer; display:inline-flex; gap:8px; align-items:center; transition:.2s; background:rgba(255,255,255,.02)}
+  .stog .d{width:8px; height:8px; border-radius:50%; border:1px solid var(--faint); transition:.2s}
+  .stog:hover{color:var(--ink)}
+  .stog.on{color:var(--accent); border-color:rgba(194,168,120,.5); background:rgba(194,168,120,.07)}
+  .stog.on .d{background:var(--gold); border-color:var(--gold); box-shadow:0 0 8px var(--gold)}
+  .stog.locked{opacity:.8; cursor:default}
+  .bento{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+  .tile{border:1px solid var(--line); border-radius:14px; padding:15px 16px; background:rgba(255,255,255,.025); min-height:116px; display:flex; flex-direction:column}
+  .tile.wide{grid-column:span 2}
+  .tile.core{border-color:rgba(194,168,120,.4); background:rgba(194,168,120,.06)}
+  .tile.appear{animation:tilein .5s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes tilein{from{opacity:0; transform:scale(.96) translateY(10px)}to{opacity:1; transform:none}}
+  .tile .tk{font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); font-weight:500; margin-bottom:9px; display:flex; align-items:center; gap:7px}
+  .tile .tk svg{width:14px; height:14px; stroke:var(--gold); fill:none; stroke-width:1.6}
+  .tile h5{font-family:'Instrument Serif',serif; font-weight:400; font-size:18px; margin-bottom:6px}
+  .tile p{font-size:12.5px; color:var(--muted); font-weight:300; line-height:1.5}
+  .tile p b{color:var(--accent); font-weight:500}
+  .dash-hint{font-size:11.5px; color:var(--faint); margin-top:15px; text-align:center}
+
+  /* placement matrix — choose what shows where (diagram 04) */
+  .place{max-width:540px; margin:0 auto 24px; border:1px solid var(--line-soft); border-radius:14px; padding:15px 20px 17px; background:rgba(255,255,255,.02)}
+  .place-head{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); font-weight:500; text-align:center}
+  .place-sub{font-size:11px; color:var(--faint); text-align:center; margin:3px 0 14px}
+  .place-grid{display:grid; grid-template-columns:1fr 52px 52px 52px; gap:9px 0; align-items:center}
+  .place-grid .col-h{font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); text-align:center}
+  .place-grid .mname{font-size:12.5px; color:var(--accent)}
+  .pdot{width:18px; height:18px; border-radius:50%; border:1px solid var(--faint); cursor:pointer; margin:0 auto; transition:.18s}
+  .pdot.on{background:var(--gold); border-color:var(--gold); box-shadow:0 0 8px rgba(194,168,120,.5)}
+  .pdot.lock{opacity:.5; cursor:default}
+  .pdot:hover:not(.lock){border-color:var(--gold)}
+
+  /* all-surfaces lineup + device frames (diagram 04) */
+  .dgm-stage.wide{width:min(1060px, 94vw); position:relative; left:50%; transform:translateX(-50%)}
+  .lineup{display:flex; gap:18px; align-items:flex-end; justify-content:center; flex-wrap:wrap}
+  .lineup .col{display:flex; flex-direction:column}
+  .device{background:rgba(255,255,255,.012); border:1px solid var(--line); border-radius:14px; overflow:hidden}
+  .device-chrome{display:flex; align-items:center; gap:7px; padding:0 12px; height:30px;
+    border-bottom:1px solid var(--line-soft); font-size:10.5px; color:var(--faint); letter-spacing:.04em}
+  .device-chrome .dots{display:flex; gap:5px}
+  .device-chrome .dots i{width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.18)}
+  .device-chrome .notch{width:58px; height:15px; border-radius:0 0 10px 10px; background:#000; margin:0 auto}
+  .device .bento{display:grid; gap:9px; padding:12px}
+  .lineup .tile{min-height:74px; padding:11px 12px; border-radius:11px}
+  .lineup .tile .tk{font-size:8.5px; letter-spacing:.14em; margin-bottom:6px}
+  .lineup .tile .tk svg{width:13px; height:13px}
+  .lineup .tile h5{font-size:15px; margin-bottom:4px; line-height:1.05}
+  .lineup .tile p{font-size:10.5px; line-height:1.4}
+  /* mac */
+  .device.mac{width:418px}
+  .device.mac .bento{grid-template-columns:repeat(3,1fr)}
+  .device.mac .tile.wide{grid-column:span 2}
+  /* iphone — a touch wider so it isn't squashed */
+  .device.iphone{width:184px; border-radius:30px; border:6px solid #1b1b18}
+  .device.iphone .device-chrome{height:22px; justify-content:center; border-bottom:0}
+  .device.iphone .bento{grid-template-columns:1fr; padding:10px}
+  .device.iphone .tile.wide{grid-column:auto}
+  /* tablet (home) */
+  .device.tablet{width:300px; border-radius:16px; border:7px solid #161610}
+  .device.tablet .bento{grid-template-columns:repeat(2,1fr)}
+  .device.tablet .tile.wide{grid-column:span 2}
+  .dev-label{text-align:center; font-size:11.5px; color:var(--muted); margin-top:12px; letter-spacing:.02em}
+  .dev-label b{color:var(--accent); font-weight:500; display:block; font-size:12.5px; margin-bottom:2px; font-family:'Instrument Serif',serif}
+  @media (max-width:760px){
+    .dgm-stage.wide{width:94vw}
+    .device.mac{width:100%}
+    .device.mac .bento{grid-template-columns:repeat(2,1fr)}
+    .device.tablet{width:100%}
+    .device.iphone{width:212px}
+  }
+
+  /* per-surface "what shows where" summary (diagram 05) */
+  .surf-summary{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:22px}
+  .ss-col{border:1px solid var(--line); border-radius:13px; padding:15px 16px; background:rgba(255,255,255,.022)}
+  .ss-col.key{border-color:var(--gold-line); background:rgba(194,168,120,.06)}
+  .ss-h{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--accent); margin-bottom:11px; font-weight:500}
+  .ss-h svg{width:17px; height:17px; stroke:var(--gold); fill:none; stroke-width:1.5; flex:none}
+  .ss-tag{font-size:9.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); margin-left:auto; font-weight:400; letter-spacing:.1em}
+  .ss-apps{display:flex; flex-wrap:wrap; gap:6px}
+  .ss-apps span{font-size:11.5px; color:var(--muted); border:1px solid var(--line-soft); border-radius:7px; padding:5px 9px; background:rgba(255,255,255,.02)}
+  .ss-col.key .ss-apps span{color:var(--accent); border-color:var(--gold-line)}
+  @media (max-width:620px){ .surf-summary{grid-template-columns:1fr} }
+
+  @media (max-width:560px){
+    .deck{height:300px}
+    .skill-detail{flex-direction:column}
+    .sd-side{align-items:flex-start; width:100%}
+    .sd-note{text-align:left}
+    .bento{grid-template-columns:1fr 1fr}
+  }
+
+  @media (max-width:720px){
+    nav{padding:22px 0 0}
+    .nav-right{gap:14px}
+    .head{padding:54px 0 22px}
+    .dgm-stage{padding:18px 12px}
+  }
+  @media (prefers-reduced-motion:reduce){ .card{transition:none} }
+
+  /* ── spaces: Venn legend + Me-lens roll-up (diagram 06) ── */
+  .legend{display:flex; gap:22px; justify-content:center; flex-wrap:wrap; margin-top:18px; font-size:12.5px; color:var(--muted)}
+  .legend span{display:inline-flex; align-items:center; gap:8px}
+  .legend i{width:9px; height:9px; border-radius:50%; display:inline-block}
+  .sp-personal{background:#c2a878}.sp-family{background:#e8e4dc}.sp-business{background:#9fb3c8}
+  .spaces-row{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:24px}
+  .space{border:1px solid var(--line); border-radius:14px; padding:16px; background:rgba(255,255,255,.025)}
+  .space .sh{display:flex; align-items:center; gap:8px; font-family:'Instrument Serif',serif; font-size:19px; margin-bottom:4px}
+  .space .sh i{width:9px; height:9px; border-radius:50%}
+  .space .ssub{font-size:11px; color:var(--faint); margin-bottom:12px}
+  .space .mods{display:flex; flex-wrap:wrap; gap:6px}
+  .space .mods span{font-size:11.5px; color:var(--muted); border:1px solid var(--line-soft); border-radius:7px; padding:5px 9px; background:rgba(255,255,255,.02)}
+  .funnel{display:flex; align-items:center; justify-content:center; gap:10px; color:var(--gold); font-size:12px; margin:16px 0; letter-spacing:.04em}
+  .funnel .ln{height:1px; width:46px; background:linear-gradient(90deg, transparent, var(--gold-line), transparent)}
+  .me{border:1px solid var(--gold-line); border-radius:16px; padding:20px 22px; background:linear-gradient(180deg, rgba(194,168,120,.06), rgba(255,255,255,.012))}
+  .me-h{display:flex; align-items:center; gap:10px; margin-bottom:14px}
+  .me-h .mk{width:26px; height:26px; flex:none}
+  .me-h b{font-family:'Instrument Serif',serif; font-weight:400; font-size:20px}
+  .me-h .s{font-size:11.5px; color:var(--muted)}
+  .me-rows{display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
+  .me-row{display:flex; align-items:flex-start; gap:10px; border:1px solid var(--line-soft); border-radius:11px; padding:11px 13px; background:rgba(255,255,255,.022)}
+  .me-row i{width:8px; height:8px; border-radius:50%; margin-top:5px; flex:none}
+  .me-row .t{font-size:13px; color:var(--accent)}
+  .me-row .src{font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); margin-bottom:2px}
+  @media (max-width:620px){ .spaces-row{grid-template-columns:1fr} .me-rows{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav>
+    <a class="brand" href="index.html">
+      <svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="7" fill="#f5f5f3"/>
+        <circle cx="50" cy="50" r="24" fill="none" stroke="#f5f5f3" stroke-opacity=".45" stroke-width="2"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#f5f5f3" stroke-opacity=".18" stroke-width="2"/>
+      </svg>
+      <b>ECHO</b>
+    </a>
+    <div class="nav-right">
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="family-hub.html">Family Space</a>
+      <a class="nav-link" href="demo.html">Live demo</a>
+      <a class="nav-link" href="components.html">Building blocks</a>
+      <a class="nav-link" href="blog.html">Blog</a>
+      <a class="nav-cta" href="index.html#waitlist">Request access</a>
+    </div>
+  </nav>
+
+  <header class="head">
+    <div class="eyebrow"><span class="dot"></span>How it works</div>
+    <h1>Not an app you open. <span class="it">A layer that runs.</span></h1>
+    <p>by9am is easier to show than to tell. Here's the whole idea in <b>six pictures</b> — what it is, what it can do, when it works, how it comes together, why it's actually yours, and how it scales across your whole life. The detailed questions people ask are answered further down.</p>
+  </header>
+
+  <section class="diagrams">
+
+    <!-- ── Diagram 1 — The flow (pipeline) ── -->
+    <article class="dgm">
+      <div class="dgm-n">01 — What it is</div>
+      <h2 class="dgm-h">Your data in. <span class="it">Action out.</span></h2>
+      <p class="dgm-dek">Everything you touch — health, calendar, email, conversations — flows into <b>one wiki-style memory</b>. by9am reads the whole picture, runs the right <b>skill</b>, and acts through the <b>tools</b> you've switched on. Raw signal enters one side; finished work leaves the other, reaching you on <b>every channel</b>.</p>
+      <div class="dgm-stage">
+        <div class="pl">
+          <div class="pl-stage">
+            <div class="pl-k">Sources</div>
+            <div class="pl-chips">
+              <span class="pl-chip">Health data</span><span class="pl-chip">Life events</span><span class="pl-chip">Calendar</span>
+              <span class="pl-chip">Emails</span><span class="pl-chip">Flags</span><span class="pl-chip">Transcripts</span>
+            </div>
+          </div>
+          <div class="pl-ar"><span class="pl-track"><i></i></span><span class="c">extract &amp; file</span></div>
+          <div class="pl-stage key">
+            <div class="pl-k">Unified memory</div>
+            <div class="pl-sub">your wiki — one source of truth</div>
+            <div class="pl-chips">
+              <span class="pl-chip g">People · Health</span><span class="pl-chip g">Projects · Places</span><span class="pl-chip g">Events · Money</span>
+            </div>
+          </div>
+          <div class="pl-ar"><span class="pl-track"><i style="animation-delay:.4s"></i></span><span class="c">reads it</span></div>
+          <div class="pl-stage brain">
+            <div class="pl-mark">
+              <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="7" fill="#c2a878"/><circle cx="50" cy="50" r="24" fill="none" stroke="#c2a878" stroke-opacity=".5" stroke-width="3"/><circle cx="50" cy="50" r="42" fill="none" stroke="#c2a878" stroke-opacity=".22" stroke-width="3"/></svg>
+              <div class="t">by9am</div>
+              <div class="s">orchestrates · runs skills</div>
+            </div>
+            <div class="pl-chips">
+              <span class="pl-chip">Health</span><span class="pl-chip">Life</span><span class="pl-chip">Scheduling</span>
+            </div>
+          </div>
+          <div class="pl-ar"><span class="pl-track"><i style="animation-delay:.8s"></i></span><span class="c">acts via</span></div>
+          <div class="pl-stage">
+            <div class="pl-k">Tools</div>
+            <div class="pl-chips">
+              <span class="pl-chip">Email</span><span class="pl-chip">Messaging</span><span class="pl-chip">Calendar</span>
+              <span class="pl-chip ghost">+ grow</span>
+            </div>
+          </div>
+          <div class="pl-ar"><span class="pl-track"><i style="animation-delay:1.2s"></i></span><span class="c">to</span></div>
+          <div class="pl-stage you brain">
+            <div class="pl-you-t">You</div>
+            <div class="pl-you-s">every channel</div>
+          </div>
+        </div>
+      </div>
+      <p class="dgm-cap"><b>The shape:</b> your memory and by9am are the machinery in the middle — they turn raw signal into action you just approve.</p>
+    </article>
+
+    <!-- ── Diagram 2 — Skills (coverflow) ── -->
+    <article class="dgm">
+      <div class="dgm-n">02 — What it can do</div>
+      <h2 class="dgm-h">Add skills. <span class="it">Make your own.</span></h2>
+      <p class="dgm-dek">by9am starts with a few skills and grows. <b>Install ready-made ones from the community</b>, or <b>build your own</b> — and for each skill you choose exactly which <b>tools and capabilities</b> it can touch. Switch them on as your life needs them; everything still shares the one memory underneath.</p>
+      <div class="dgm-stage">
+        <div class="deck" id="deck" tabindex="0" role="group" aria-label="Browse by9am skills — use arrow keys or drag">
+          <div class="cf" id="cf"></div>
+        </div>
+        <div class="deck-nav">
+          <button class="deck-btn" id="deckPrev" aria-label="Previous skill">‹</button>
+          <div class="deck-dots" id="deckDots"></div>
+          <button class="deck-btn" id="deckNext" aria-label="Next skill">›</button>
+        </div>
+        <div class="skill-detail" id="skillDetail">
+          <div class="sd-main">
+            <h3 id="sdName">—</h3>
+            <p class="sd-desc" id="sdDesc">—</p>
+            <div class="sd-k">Tools &amp; capabilities it can use</div>
+            <div class="sd-tools" id="sdTools"></div>
+          </div>
+          <div class="sd-side">
+            <button class="sd-toggle on" id="sdToggle" aria-pressed="true"><span class="sw"></span><span id="sdToggleT">Enabled</span></button>
+            <div class="sd-note" id="sdNote">You decide which tools each skill may touch — nothing more.</div>
+          </div>
+        </div>
+      </div>
+      <p class="dgm-cap"><b>The point:</b> by9am isn't one fixed product — it's a base that you extend, skill by skill, granting each only the reach you choose.</p>
+    </article>
+
+    <!-- ── Diagram 3 — Works overnight ── -->
+    <article class="dgm">
+      <div class="dgm-n">03 — When it works</div>
+      <h2 class="dgm-h">Go to bed behind. <span class="it">Wake up ahead.</span></h2>
+      <p class="dgm-dek">Hand off the day's loose ends at night. While you sleep, by9am clears the inbox, preps tomorrow's meetings, chases the follow-ups and runs the research — so the morning starts with <b>the work already done</b> and a short list of what truly needs you.</p>
+      <div class="dgm-stage">
+        <svg class="diagram" viewBox="0 0 760 360" role="img" aria-label="An overnight timeline: you hand off at 11pm, by9am works through the night, you wake at 7am to completed work">
+          <defs>
+            <linearGradient id="night2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#0a0a14"/><stop offset="0.55" stop-color="#11101a"/><stop offset="1" stop-color="#1a130c"/>
+            </linearGradient>
+          </defs>
+          <rect x="18" y="20" width="724" height="320" rx="20" fill="url(#night2)" stroke="rgba(255,255,255,.07)"/>
+          <!-- dotted night track + travelling dot -->
+          <path d="M120 88 L640 88" stroke="rgba(194,168,120,.28)" stroke-width="1" stroke-dasharray="2 7"/>
+          <circle r="4" fill="#c2a878">
+            <animateMotion dur="4.5s" repeatCount="indefinite" path="M120 88 L640 88"/>
+          </circle>
+          <!-- moon, left -->
+          <g transform="translate(80,88)">
+            <circle r="22" fill="#e8e4dc" opacity=".92"/>
+            <circle cx="9" r="22" fill="#0d0c16"/>
+          </g>
+          <text x="80" y="146" font-size="12" fill="#c2a878" text-anchor="middle" letter-spacing="2">11 PM</text>
+          <text x="80" y="168" font-size="12" fill="#8a8a86" text-anchor="middle">go to bed</text>
+          <text x="80" y="185" font-size="12" fill="#8a8a86" text-anchor="middle">behind</text>
+          <!-- sun, right -->
+          <g transform="translate(680,88)" stroke="#c2a878" stroke-width="1.5">
+            <circle r="15" fill="#c2a878"/>
+            <g opacity=".8">
+              <line x1="0" y1="-24" x2="0" y2="-30"/><line x1="0" y1="24" x2="0" y2="30"/>
+              <line x1="-24" y1="0" x2="-30" y2="0"/><line x1="24" y1="0" x2="30" y2="0"/>
+              <line x1="-17" y1="-17" x2="-21" y2="-21"/><line x1="17" y1="17" x2="21" y2="21"/>
+              <line x1="-17" y1="17" x2="-21" y2="21"/><line x1="17" y1="-17" x2="21" y2="-21"/>
+            </g>
+          </g>
+          <text x="680" y="146" font-size="12" fill="#c2a878" text-anchor="middle" letter-spacing="2">7 AM</text>
+          <text x="680" y="168" font-size="12" fill="#e8e4dc" text-anchor="middle">wake up</text>
+          <text x="680" y="185" font-size="12" fill="#e8e4dc" text-anchor="middle">ahead</text>
+          <!-- middle: while you sleep -->
+          <text x="380" y="62" font-size="11" fill="#c2a878" text-anchor="middle" letter-spacing="3">WHILE YOU SLEEP</text>
+          <g font-size="13.5" fill="#e8e4dc">
+            <g><rect x="248" y="120" width="264" height="40" rx="10" fill="rgba(255,255,255,.035)" stroke="rgba(255,255,255,.1)"/><text x="278" y="145" fill="#c2a878">✓</text><text x="298" y="145">Inbox cleared to zero</text></g>
+            <g><rect x="248" y="170" width="264" height="40" rx="10" fill="rgba(255,255,255,.035)" stroke="rgba(255,255,255,.1)"/><text x="278" y="195" fill="#c2a878">✓</text><text x="298" y="195">Tomorrow's meetings prepped</text></g>
+            <g><rect x="248" y="220" width="264" height="40" rx="10" fill="rgba(255,255,255,.035)" stroke="rgba(255,255,255,.1)"/><text x="278" y="245" fill="#c2a878">✓</text><text x="298" y="245">Follow-ups chased</text></g>
+            <g><rect x="248" y="270" width="264" height="40" rx="10" fill="rgba(255,255,255,.035)" stroke="rgba(255,255,255,.1)"/><text x="278" y="295" fill="#c2a878">✓</text><text x="298" y="295">Overnight research done</text></g>
+          </g>
+        </svg>
+      </div>
+      <p class="dgm-cap"><b>The promise:</b> the night does the work. You stop being the bottleneck on your own day.</p>
+    </article>
+
+    <!-- ── Diagram 4 — Dashboard assembles from skills ── -->
+    <article class="dgm">
+      <div class="dgm-n">04 — How it comes together</div>
+      <h2 class="dgm-h">A dashboard that <span class="it">builds itself.</span></h2>
+      <p class="dgm-dek">Your view of by9am isn't fixed — and neither is <i>where</i> things live. The same skills render to fit every screen, and <b>you choose which modules show on which surface</b>: the essentials on your <b>iPhone</b>, the full board on your <b>Mac</b>, and the kitchen tablet kept to <b>family — shopping, the shared calendar, the week ahead</b>. Set any module to any surface below and watch all three update.</p>
+      <div class="dgm-stage wide">
+        <div class="dash-top">
+          <span class="em">Your dashboard</span>
+          <span class="dash-live"><i></i>live · across your devices</span>
+        </div>
+        <div class="place" id="place" role="group" aria-label="Choose which modules show on which surface"></div>
+        <div class="lineup" id="lineup"></div>
+        <div class="dash-hint" id="dashHint"></div>
+      </div>
+      <p class="dgm-cap"><b>The control:</b> sensible defaults out of the box — phone glanceable, Mac the full desk, kitchen family-first — and every module is yours to place, add or hide, per surface.</p>
+    </article>
+
+    <!-- ── Diagram 4 — Your home base, reached from anywhere ── -->
+    <article class="dgm">
+      <div class="dgm-n">05 — Why it's yours</div>
+      <h2 class="dgm-h">Yours. <span class="it">Actually yours.</span></h2>
+      <p class="dgm-dek">by9am lives on <b>your own private VM</b> — hosted wherever you like (any cloud, or your own box) — with <b>a database you choose</b>, an open by9am core and your model key, all under one roof you own. You reach that single home from wherever you already are: <b>Telegram or WhatsApp on your phone</b>, <b>Claude Code on your Mac</b>, even a <b>shared kitchen screen</b> the family uses for the shopping list and the week's calendar. Same by9am, same memory, always in sync — and you can pick it up and leave whenever you like.</p>
+      <div class="dgm-stage">
+        <svg class="diagram" viewBox="0 0 760 510" role="img" aria-label="Your private VM drawn as a house holding your data, open by9am core and key — reached and kept in sync from your phone, your Mac and a shared family kitchen screen">
+          <!-- alive: gentle home pulse -->
+          <circle cx="380" cy="182" r="92" fill="none" stroke="#c2a878" stroke-width="1">
+            <animate attributeName="r" values="84;146" dur="4.5s" repeatCount="indefinite"/>
+            <animate attributeName="stroke-opacity" values="0.22;0" dur="4.5s" repeatCount="indefinite"/>
+          </circle>
+          <!-- connectors -->
+          <path id="h1" d="M131 188 Q 230 200 302 208" fill="none" stroke="rgba(194,168,120,.35)" stroke-width="1.2"/>
+          <path id="h2" d="M619 186 Q 520 200 458 208" fill="none" stroke="rgba(194,168,120,.35)" stroke-width="1.2"/>
+          <path id="h3" d="M380 266 L380 330" fill="none" stroke="rgba(194,168,120,.35)" stroke-width="1.2"/>
+          <!-- bidirectional sync pulses -->
+          <g>
+            <circle r="3.4" fill="#c2a878"><animateMotion dur="2.8s" repeatCount="indefinite"><mpath href="#h1"/></animateMotion></circle>
+            <circle r="2.6" fill="#e8e4dc"><animateMotion dur="3.2s" begin="0.7s" keyPoints="1;0" keyTimes="0;1" calcMode="linear" repeatCount="indefinite"><mpath href="#h1"/></animateMotion></circle>
+            <circle r="3.4" fill="#c2a878"><animateMotion dur="2.8s" begin="0.5s" repeatCount="indefinite"><mpath href="#h2"/></animateMotion></circle>
+            <circle r="2.6" fill="#e8e4dc"><animateMotion dur="3.2s" begin="1.3s" keyPoints="1;0" keyTimes="0;1" calcMode="linear" repeatCount="indefinite"><mpath href="#h2"/></animateMotion></circle>
+            <circle r="3.4" fill="#c2a878"><animateMotion dur="2.6s" begin="1s" repeatCount="indefinite"><mpath href="#h3"/></animateMotion></circle>
+            <circle r="2.6" fill="#e8e4dc"><animateMotion dur="3s" begin="0.2s" keyPoints="1;0" keyTimes="0;1" calcMode="linear" repeatCount="indefinite"><mpath href="#h3"/></animateMotion></circle>
+          </g>
+          <!-- header labels -->
+          <text x="380" y="40" font-size="10.5" fill="#c2a878" text-anchor="middle" letter-spacing="3">YOUR HOME BASE · YOUR PRIVATE VM</text>
+          <text x="380" y="57" font-size="10" fill="#5a5a57" text-anchor="middle" letter-spacing="1">host on any cloud or your own box · a database you choose · open by9am core · your key</text>
+          <!-- the house = your VM -->
+          <polygon points="300,156 380,86 460,156" fill="rgba(194,168,120,.12)" stroke="#c2a878" stroke-width="1.4" stroke-linejoin="round"/>
+          <rect x="304" y="156" width="152" height="110" rx="4" fill="rgba(194,168,120,.06)" stroke="#c2a878" stroke-width="1.4"/>
+          <rect x="362" y="216" width="36" height="50" rx="2" fill="rgba(255,255,255,.04)" stroke="rgba(194,168,120,.4)"/>
+          <g transform="translate(338,186)" stroke="#c2a878" stroke-width="1.1" fill="none" opacity=".85">
+            <ellipse cx="0" cy="-7" rx="9" ry="3.5"/><path d="M-9 -7 V7 a9 3.5 0 0 0 18 0 V-7"/><path d="M-9 0 a9 3.5 0 0 0 18 0"/>
+          </g>
+          <g transform="translate(422,186)" stroke="#c2a878" stroke-width="1.3" fill="none" opacity=".85">
+            <path d="M-5 -7 L-11 0 L-5 7"/><path d="M5 -7 L11 0 L5 7"/>
+          </g>
+          <text x="446" y="300" font-size="9.5" fill="#5a5a57" text-anchor="start">+ Slack · voice · anywhere</text>
+          <text x="314" y="300" font-size="9.5" fill="#5a5a57" text-anchor="end">always in sync</text>
+          <!-- phone, left -->
+          <rect x="85" y="150" width="40" height="72" rx="9" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.28)"/>
+          <line x1="99" y1="158" x2="111" y2="158" stroke="rgba(255,255,255,.32)"/>
+          <circle cx="105" cy="215" r="2.4" fill="rgba(255,255,255,.32)"/>
+          <text x="105" y="246" font-size="12.5" fill="#f5f5f3" text-anchor="middle">On your phone</text>
+          <text x="105" y="263" font-size="11" fill="#8a8a86" text-anchor="middle">Telegram · WhatsApp</text>
+          <!-- laptop, right -->
+          <rect x="621" y="154" width="68" height="46" rx="4" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.28)"/>
+          <path d="M609 208 L701 208 L693 200 L617 200 Z" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.28)" stroke-linejoin="round"/>
+          <text x="655" y="246" font-size="12.5" fill="#f5f5f3" text-anchor="middle">At your Mac</text>
+          <text x="655" y="263" font-size="11" fill="#8a8a86" text-anchor="middle">Claude Code</text>
+          <!-- kitchen screen = shared family dashboard -->
+          <rect x="246" y="330" width="268" height="142" rx="12" fill="rgba(255,255,255,.022)" stroke="rgba(194,168,120,.4)" stroke-width="1.3"/>
+          <rect x="372" y="472" width="16" height="9" fill="rgba(255,255,255,.05)" stroke="rgba(194,168,120,.3)"/>
+          <line x1="356" y1="481" x2="404" y2="481" stroke="rgba(194,168,120,.3)" stroke-width="1.3"/>
+          <text x="262" y="354" font-size="9.5" fill="#c2a878" letter-spacing="2">KITCHEN · FAMILY</text>
+          <g><circle cx="458" cy="350" r="3" fill="#9ad99a"/><text x="498" y="354" font-size="9.5" fill="#8a8a86" text-anchor="end">today</text></g>
+          <line x1="384" y1="364" x2="384" y2="458" stroke="rgba(255,255,255,.08)"/>
+          <!-- shopping list -->
+          <text x="262" y="380" font-size="9" fill="#e8e4dc" letter-spacing="1.5">SHOPPING</text>
+          <g stroke="rgba(194,168,120,.6)" fill="none" stroke-width="1.1"><rect x="262" y="392" width="9" height="9" rx="2"/><path d="M264 396.5 l2 2 l3.5 -4"/></g>
+          <text x="280" y="400" font-size="10.5" fill="#8a8a86" text-decoration="line-through">Milk</text>
+          <rect x="262" y="410" width="9" height="9" rx="2" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.1"/>
+          <text x="280" y="418" font-size="10.5" fill="#f5f5f3">Eggs</text>
+          <rect x="262" y="428" width="9" height="9" rx="2" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.1"/>
+          <text x="280" y="436" font-size="10.5" fill="#f5f5f3">Pasta &amp; sauce</text>
+          <!-- shared calendar -->
+          <text x="398" y="380" font-size="9" fill="#e8e4dc" letter-spacing="1.5">THIS WEEK</text>
+          <g fill="#c2a878"><circle cx="402" cy="396" r="2"/><circle cx="402" cy="414" r="2"/><circle cx="402" cy="432" r="2"/></g>
+          <text x="412" y="400" font-size="10.5" fill="#f5f5f3">Wed · Sarah's bday</text>
+          <text x="412" y="418" font-size="10.5" fill="#f5f5f3">Thu · Mia swim</text>
+          <text x="412" y="436" font-size="10.5" fill="#f5f5f3">Fri · away</text>
+          <text x="380" y="500" font-size="11" fill="#8a8a86" text-anchor="middle">The kitchen screen — a shared family dashboard</text>
+        </svg>
+        <div class="surf-summary">
+          <div class="ss-col">
+            <div class="ss-h"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2.5"/><line x1="11" y1="18" x2="13" y2="18"/></svg>Your phone<span class="ss-tag">glanceable</span></div>
+            <div class="ss-apps"><span>Today's 3</span><span>Inbox</span><span>Messages</span><span>Next event</span></div>
+          </div>
+          <div class="ss-col">
+            <div class="ss-h"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M2 21h20"/></svg>Your Mac<span class="ss-tag">full board</span></div>
+            <div class="ss-apps"><span>Priorities</span><span>Inbox</span><span>Projects</span><span>Research</span><span>Finance</span><span>Calendar</span></div>
+          </div>
+          <div class="ss-col key">
+            <div class="ss-h"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M3 9h18"/></svg>Kitchen · family<span class="ss-tag">shared</span></div>
+            <div class="ss-apps"><span>Shopping list</span><span>Shared calendar</span><span>Meal plan</span><span>Chores</span><span>Family notes</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="dgm-cap"><b>The trust model:</b> a home you own and visit, not an account you rent — single-tenant, inspectable, portable. The phone shows the glance, the Mac the full desk, the kitchen the family — same memory underneath, and the privacy is auditable, not just promised.</p>
+    </article>
+
+    <!-- ── Diagram 6 — One you, many Spaces ── -->
+    <article class="dgm">
+      <div class="dgm-n">06 — How it scales</div>
+      <h2 class="dgm-h">One you. <span class="it">Many Spaces.</span></h2>
+      <p class="dgm-dek">Your life isn't one bucket. by9am holds <b>Personal</b>, <b>Family</b> and <b>Business</b> as separate, sovereign <b>Spaces</b> — like Notion workspaces, but each its own private store. A module can be <b>shared across them by reference</b> (one source of truth, never a copy), and a personal <b>"Me" lens</b> rolls the bits you care about into one dashboard. Work stays in work; your one screen still shows the whole day.</p>
+      <div class="dgm-stage">
+        <svg class="diagram" viewBox="0 0 760 600" role="img" aria-label="Three overlapping Spaces — Personal, Family, Business — with shared modules in the overlaps and you at the centre">
+          <circle cx="380" cy="225" r="160" fill="rgba(194,168,120,.05)" stroke="rgba(194,168,120,.55)" stroke-width="1.3"/>
+          <circle cx="296" cy="368" r="160" fill="rgba(232,228,220,.045)" stroke="rgba(232,228,220,.45)" stroke-width="1.3"/>
+          <circle cx="464" cy="368" r="160" fill="rgba(159,179,200,.05)" stroke="rgba(159,179,200,.5)" stroke-width="1.3"/>
+          <g text-anchor="middle">
+            <text x="380" y="130" font-size="22" fill="#f5f5f3" font-family="'Instrument Serif',serif">Personal</text>
+            <text x="380" y="150" font-size="10.5" fill="#8a8a86">health · notes · money</text>
+            <circle cx="343" cy="124" r="3.5" fill="#c2a878"/>
+            <text x="214" y="430" font-size="22" fill="#f5f5f3" font-family="'Instrument Serif',serif">Family</text>
+            <text x="214" y="450" font-size="10.5" fill="#8a8a86">shopping · kids · meals</text>
+            <circle cx="170" cy="424" r="3.5" fill="#e8e4dc"/>
+            <text x="546" y="430" font-size="22" fill="#f5f5f3" font-family="'Instrument Serif',serif">Business</text>
+            <text x="546" y="450" font-size="10.5" fill="#8a8a86">projects · team · clients</text>
+            <circle cx="498" cy="424" r="3.5" fill="#9fb3c8"/>
+          </g>
+          <g text-anchor="middle">
+            <text x="300" y="262" font-size="11" fill="#e8e4dc">Shared calendar</text>
+            <text x="300" y="279" font-size="11" fill="#e8e4dc">Photos</text>
+            <text x="460" y="262" font-size="11" fill="#e8e4dc">Contacts</text>
+            <text x="460" y="279" font-size="11" fill="#e8e4dc">Travel</text>
+            <text x="380" y="436" font-size="11" fill="#e8e4dc">Household budget</text>
+            <text x="380" y="452" font-size="9.5" fill="#5a5a57">shared by reference ↔</text>
+          </g>
+          <g text-anchor="middle">
+            <circle cx="380" cy="330" r="34" fill="#0b0b0a" stroke="rgba(194,168,120,.5)" stroke-width="1.2"/>
+            <circle cx="380" cy="330" r="20" fill="none" stroke="rgba(194,168,120,.35)" stroke-width="1"/>
+            <circle class="svg-breathe" cx="380" cy="330" r="5" fill="#c2a878"/>
+            <text x="380" y="392" font-size="15" fill="#e8e4dc" font-family="'Instrument Serif',serif" font-style="italic">you</text>
+            <text x="380" y="408" font-size="9" fill="#8a8a86">one identity, all Spaces</text>
+          </g>
+        </svg>
+        <div class="legend">
+          <span><i class="sp-personal"></i>Personal — your VM</span>
+          <span><i class="sp-family"></i>Family — the shared Family Space</span>
+          <span><i class="sp-business"></i>Business — the company's</span>
+        </div>
+
+        <div class="spaces-row">
+          <div class="space">
+            <div class="sh"><i class="sp-personal"></i>Personal</div>
+            <div class="ssub">your VM · just you</div>
+            <div class="mods"><span>Health</span><span>Notes</span><span>Money</span><span>Travel</span></div>
+          </div>
+          <div class="space">
+            <div class="sh"><i class="sp-family"></i>Family</div>
+            <div class="ssub">shared · the Family Space</div>
+            <div class="mods"><span>Calendar</span><span>Shopping</span><span>Kids</span><span>Meals</span></div>
+          </div>
+          <div class="space">
+            <div class="sh"><i class="sp-business"></i>Business</div>
+            <div class="ssub">the company's Space</div>
+            <div class="mods"><span>Projects</span><span>Team</span><span>Clients</span><span>Inbox</span></div>
+          </div>
+        </div>
+        <div class="funnel"><span class="ln"></span>the Me lens pulls a thread from each<span class="ln"></span></div>
+        <div class="me">
+          <div class="me-h">
+            <svg class="mk" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="7" fill="#c2a878"/><circle cx="50" cy="50" r="24" fill="none" stroke="#c2a878" stroke-opacity=".5" stroke-width="3"/><circle cx="50" cy="50" r="42" fill="none" stroke="#c2a878" stroke-opacity=".22" stroke-width="3"/></svg>
+            <div><b>Your dashboard</b> &nbsp;<span class="s">the Me lens — one view across every Space</span></div>
+          </div>
+          <div class="me-rows">
+            <div class="me-row"><i class="sp-personal"></i><div><div class="src">Personal</div><div class="t">Morning training done · sleep 7.3h</div></div></div>
+            <div class="me-row"><i class="sp-business"></i><div><div class="src">Business</div><div class="t">14:00 client call · brief ready</div></div></div>
+            <div class="me-row"><i class="sp-family"></i><div><div class="src">Family</div><div class="t">15:30 school pickup — Mia</div></div></div>
+            <div class="me-row"><i class="sp-family"></i><div><div class="src">Family</div><div class="t">Shopping: milk, eggs, pasta</div></div></div>
+          </div>
+        </div>
+      </div>
+      <p class="dgm-cap"><b>The model:</b> one identity, many Spaces — each sovereign, shared by reference, federated not pooled, and rolled into a single view whenever you want it.</p>
+    </article>
+
+  </section>
+
+  <section class="faq-wrap">
+    <div class="faq-head">
+      <div class="eyebrow"><span class="dot"></span>Questions</div>
+      <h2>The questions people ask before they join</h2>
+      <p>Everything above, in detail — plus the practical ones about cost, channels and access.</p>
+    </div>
+
+    <section class="faq">
+
+      <details open>
+        <summary>What is by9am, really?</summary>
+        <div class="a">
+          <p>An ambient assistant that lives in the channels you already use — Telegram, WhatsApp, Slack, email, Signal, voice — and works through the night so you wake up ahead. It reads what's coming at you, remembers everyone you know, and does the work before you ask: drafts the reply, preps the meeting, books the table, chases the follow-up.</p>
+          <p>It isn't an app you open. It's a quiet layer over your whole life — work and personal — with one shared memory underneath.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Where does my data live?</summary>
+        <div class="a">
+          <span class="tag">Your own database</span>
+          <p>In a store <b>you own</b> — your repository and database, on your infrastructure. Your memory, your contacts, your notes, your history. It is <b>single-tenant</b>: nothing is pooled with other members, and none of it is ever used to train a model or sold to anyone.</p>
+          <p>You can read it, export it, or delete it at any time. Leaving means taking your data and the code with you — there's no hostage situation.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Whose AI is it running on?</summary>
+        <div class="a">
+          <span class="tag">Bring your own key</span>
+          <p>Yours. by9am runs on <b>your own Anthropic / Claude key or plan</b>. Model usage is billed to you directly, at cost — no markup, no reselling tokens, no middleman reading your prompts.</p>
+          <p>Because the intelligence is your key and the data is your database, the trust model is simple: we operate the plumbing, you own the brain and the memory.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Is it open source?</summary>
+        <div class="a">
+          <span class="tag">Open foundation</span>
+          <p>Yes. by9am is built on an <b>open-source foundation</b> you can inspect, fork and extend. No black box: you can see exactly what it does with your data and your key, and the community improves the core in the open.</p>
+          <p>If you ever want to run the whole thing yourself, you can — the managed service is about convenience, not lock-in.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>How do I get it set up?</summary>
+        <div class="a">
+          <span class="tag">Done for you</span>
+          <p>We do it with you, one to one. We provision a <b>private VM</b> for you, connect your channels, wire in your model key, and migrate the context that matters — so on day one it already knows your world.</p>
+          <p>This is why access is members-first: every onboarding is a hands-on session, not a self-serve signup, and there are only so many in each wave.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>What does it cost?</summary>
+        <div class="a">
+          <span class="tag">Hosting &amp; improvement</span>
+          <p>A membership fee covers the managed hosting — your private VM, the channel bridges, monitoring, security and updates — plus <b>continuous improvement</b>: by9am gets sharper every week, and that work flows to you automatically.</p>
+          <p>Model usage is separate and passes straight through to your own key, at cost. So you're paying for the service and the hosting, never a markup on the intelligence itself.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Which channels does it work on?</summary>
+        <div class="a">
+          <p>Telegram, WhatsApp, Slack, email, Signal and voice today. It's the same assistant with the same memory wherever you reach it — message it from your phone in the morning and your laptop at night, it doesn't lose the thread.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Is it private and secure?</summary>
+        <div class="a">
+          <p>By design. Single-tenant infrastructure, your own keys, your own VM, your own data store. Nothing is shared across members and nothing is mined. The open foundation means the privacy claims are auditable, not just promised.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>How do I get access?</summary>
+        <div class="a">
+          <p>By nomination, or by applying. Most members are nominated by someone already inside; if that's not you, you can apply and we open a few seats each wave — every request read by hand.</p>
+        </div>
+      </details>
+
+    </section>
+  </section>
+
+  <section class="cta">
+    <h2>Ready to <span class="it">wake up ahead?</span></h2>
+    <p>Get nominated, or apply for one of the seats opening in the next wave.</p>
+    <a class="btn" href="index.html#access">Request access →</a>
+  </section>
+
+  <footer>
+    <span>by9am — early access.</span>
+    <span><a href="index.html">Home</a> · <span id="yr"></span></span>
+  </footer>
+
+</div>
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  // agentmail-style staggered reveal on scroll
+  (function(){
+    if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    const els = document.querySelectorAll('.dgm');
+    els.forEach(el => el.classList.add('reveal'));
+    if(!('IntersectionObserver' in window)){ els.forEach(el => el.classList.add('in')); return; }
+    const io = new IntersectionObserver((ents) => {
+      ents.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold:.12, rootMargin:'0px 0px -8% 0px' });
+    els.forEach(el => io.observe(el));
+  })();
+
+  // ── skills coverflow (diagram 02) ──
+  (function(){
+    const cf = document.getElementById('cf'); if(!cf) return;
+    const I = {
+      health:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12h3l2 5 4-12 2 7h4"/></svg>',
+      cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>',
+      mail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></svg>',
+      search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg>',
+      family:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg>',
+      coin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10h3a1.5 1.5 0 0 1 0 3h-3M9.5 13h4"/></svg>',
+      people:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M16 6a3 3 0 0 1 0 5M17 15c2 .5 4 2 4 5"/></svg>',
+      spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v6M12 15v6M3 12h6M15 12h6M6.5 6.5l3 3M14.5 14.5l3 3M17.5 6.5l-3 3M9.5 14.5l-3 3"/></svg>',
+      grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M17.5 14.5v6M14.5 17.5h6"/></svg>'
+    };
+    const SKILLS = [
+      {ic:I.health, name:'Health', cap:'sleep · training · nutrition', tools:['Health data','Calendar'], desc:'Tracks sleep, training and weight in the background and reads the trend back to you each week.'},
+      {ic:I.cal, name:'Scheduling', cap:'meetings · holds · travel', tools:['Calendar','Email'], desc:'Books meetings, defends focus time and plans travel — proposing, never double-booking.'},
+      {ic:I.mail, name:'Inbox', cap:'triage · drafts in your voice', tools:['Email','Messaging'], desc:'Reads every thread, drafts replies that sound like you, surfaces only what needs your call.'},
+      {ic:I.search, name:'Research', cap:'overnight briefings', tools:['Web','Docs'], desc:'Hand it a company, market or name — wake up to a tight, sourced briefing.'},
+      {ic:I.family, name:'Family', cap:'activities · gifts · plans', tools:['Calendar','Messaging'], desc:'Holds the family calendar, the kids’ activities and the gift list so nothing slips.'},
+      {ic:I.coin, name:'Finance', cap:'expenses · subscriptions', tools:['Email','Docs'], desc:'Files receipts, reconciles expenses and flags the bill you’re overpaying.'},
+      {ic:I.people, name:'Relationships', cap:'remember everyone', tools:['Memory','Messaging'], desc:'Keeps everyone’s story and the promise you made — and reminds you when to follow up.'},
+      {ic:I.spark, name:'Build your own', cap:'name it · prompt it · scope it', tools:['Pick any tools'], desc:'Describe a skill in plain words, give it a prompt, and choose exactly which tools it may use. A bespoke skill for your work in minutes.', kind:'make'},
+      {ic:I.grid, name:'Community library', cap:'browse · install · share', tools:['One-click enable'], desc:'Switch on proven skills others have built and shared — installed into your own VM, scoped by you.', kind:'community'}
+    ];
+    let active = 4, dragging = false, sx = 0, auto;   // start mid so collapsed cards peek on both sides
+    const detail = {n:document.getElementById('sdName'), d:document.getElementById('sdDesc'), t:document.getElementById('sdTools'),
+      tog:document.getElementById('sdToggle'), togT:document.getElementById('sdToggleT'), note:document.getElementById('sdNote')};
+    const dots = document.getElementById('deckDots');
+    const enabled = SKILLS.map((s,i)=> i<4); // first few on by default
+
+    // build cards + dots
+    SKILLS.forEach((s,i)=>{
+      const c = document.createElement('div');
+      c.className = 'card' + (s.kind ? ' '+s.kind : '');
+      c.innerHTML = `${s.kind?'<span class="pill">'+(s.kind==='make'?'Custom':'Community')+'</span>':''}
+        <span class="ic">${s.ic}</span><h4>${s.name}</h4><div class="cap">${s.cap}</div>
+        <div class="foot">${s.kind==='make'?'+ new skill':s.kind==='community'?'from the community':'skill'}</div>`;
+      c.addEventListener('click', ()=>{ if(i===active){ toggle(); } else { go(i); } });
+      cf.appendChild(c);
+      const b = document.createElement('b'); b.addEventListener('click', ()=>go(i)); dots.appendChild(b);
+    });
+    const cards = [...cf.children];
+
+    function layout(){
+      cards.forEach((c,i)=>{
+        const o = i - active, a = Math.abs(o), s = Math.sign(o);
+        const near = Math.min(a, 2), far = Math.max(0, a - 2);   // 5 spread out; the rest collapse tight at the edges
+        const tx = s * (near*112 + far*22);
+        const tz = -near*88 - far*150;
+        const rot = Math.max(-42, Math.min(42, o*-16));
+        const scale = 1 - near*0.055 - far*0.07;
+        c.style.transform = `translateX(${tx}px) translateZ(${tz}px) rotateY(${rot}deg) scale(${scale})`;
+        c.style.opacity = a<=2 ? 1 : a<=4 ? 0.52 - (a-2)*0.17 : 0;   // ±3, ±4 peek collapsed; beyond hidden
+        c.style.zIndex = 100 - a;
+        c.style.pointerEvents = a<=2 ? 'auto' : 'none';
+        c.classList.toggle('active', i===active);
+      });
+      [...dots.children].forEach((d,i)=>d.classList.toggle('on', i===active));
+      paint();
+    }
+    function paint(){
+      const s = SKILLS[active];
+      detail.n.textContent = s.name;
+      detail.d.textContent = s.desc;
+      detail.t.innerHTML = s.tools.map(t=>`<span class="sd-tool"><span class="x">✓</span>${t}</span>`).join('');
+      if(s.kind){
+        detail.tog.style.display='none';
+        detail.note.textContent = s.kind==='make'
+          ? 'Every skill you build is granted only the tools you tick — nothing more.'
+          : 'Community skills install into your own VM and run under the tools you allow.';
+      } else {
+        detail.tog.style.display='';
+        const on = enabled[active];
+        detail.tog.classList.toggle('on', on);
+        detail.tog.setAttribute('aria-pressed', String(on));
+        detail.togT.textContent = on ? 'Enabled' : 'Enable';
+        detail.note.textContent = 'You decide which tools each skill may touch — nothing more.';
+      }
+    }
+    function toggle(){ if(SKILLS[active].kind) return; enabled[active]=!enabled[active]; paint(); }
+    function go(i){ active = (i+SKILLS.length)%SKILLS.length; layout(); restart(); }
+    detail.tog.addEventListener('click', toggle);
+    document.getElementById('deckPrev').addEventListener('click', ()=>go(active-1));
+    document.getElementById('deckNext').addEventListener('click', ()=>go(active+1));
+
+    const deck = document.getElementById('deck');
+    deck.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft'){e.preventDefault();go(active-1);} if(e.key==='ArrowRight'){e.preventDefault();go(active+1);} });
+    // drag / swipe
+    const down = x=>{dragging=true; sx=x; stop();};
+    const move = x=>{ if(!dragging) return; const dx=x-sx; if(Math.abs(dx)>52){ go(active + (dx<0?1:-1)); dragging=false; } };
+    const up = ()=>dragging=false;
+    deck.addEventListener('mousedown', e=>down(e.clientX));
+    window.addEventListener('mousemove', e=>move(e.clientX));
+    window.addEventListener('mouseup', up);
+    deck.addEventListener('touchstart', e=>down(e.touches[0].clientX), {passive:true});
+    deck.addEventListener('touchmove', e=>move(e.touches[0].clientX), {passive:true});
+    deck.addEventListener('touchend', up);
+
+    // gentle autoplay, pause on interaction
+    const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+    function start(){ if(reduce) return; auto = setInterval(()=>{ active=(active+1)%SKILLS.length; layout(); }, 3200); }
+    function stop(){ clearInterval(auto); }
+    function restart(){ stop(); start(); }
+    deck.addEventListener('mouseenter', stop); deck.addEventListener('mouseleave', start);
+    deck.addEventListener('focus', stop); deck.addEventListener('blur', start);
+
+    layout(); start();
+  })();
+
+  // ── dashboard: choose which modules show on which surface (diagram 04) ──
+  (function(){
+    const place = document.getElementById('place'), lineup = document.getElementById('lineup'), hint = document.getElementById('dashHint');
+    if(!lineup) return;
+    const rings = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5" fill="#c2a878" stroke="none"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="11" opacity=".5"/></svg>';
+    // each module carries which surfaces it shows on by default — kitchen leans family
+    const MODS = [
+      {id:'today',    name:'Today',     lock:true, wide:true, icon:rings, tk:'by9am · priorities', h:'Today', body:'<b>3 things that matter</b> · 2 done overnight', on:{phone:1,mac:1,kitchen:1}},
+      {id:'inbox',    name:'Inbox',     tk:'Inbox', h:'Cleared', body:'Inbox <b>0</b> · 3 drafts to ok', on:{phone:1,mac:1,kitchen:0}},
+      {id:'calendar', name:'Calendar',  tk:'Calendar', h:'This week', body:'Wed Sarah · Thu swim', on:{phone:1,mac:1,kitchen:1}},
+      {id:'health',   name:'Health',    tk:'Health', h:'Recovery', body:'Sleep <b>7.3h</b> · 8,420 steps', on:{phone:1,mac:1,kitchen:0}},
+      {id:'research', name:'Research',  tk:'Research', h:'Briefed', body:'<b>2 briefings</b> overnight', on:{phone:0,mac:1,kitchen:0}},
+      {id:'finance',  name:'Finance',   tk:'Finance', h:'Money', body:'£420 filed · <b>1 bill</b>', on:{phone:0,mac:1,kitchen:0}},
+      {id:'people',   name:'People',    tk:'Relationships', h:'Follow up', body:'<b>Sarah</b> — birthday Wed', on:{phone:0,mac:1,kitchen:0}},
+      {id:'family',   name:'Family',    tk:'Family', h:'Today', body:'<b>15:30</b> pickup — Mia', on:{phone:0,mac:0,kitchen:1}},
+      {id:'shopping', name:'Shopping',  tk:'Shopping', h:'List', body:'Milk ✓ · Eggs · Pasta', on:{phone:0,mac:0,kitchen:1}}
+    ];
+    const SURFS = [
+      {key:'phone',   dev:'iphone', col:'Phone',   label:{b:'On your phone', s:'glanceable · Telegram'}, chrome:'<span class="notch"></span>'},
+      {key:'mac',     dev:'mac',    col:'Mac',     label:{b:'On your Mac', s:'the full board · Claude Code'}, chrome:'<span class="dots"><i></i><i></i><i></i></span><span>by9am — your desk</span>'},
+      {key:'kitchen', dev:'tablet', col:'Kitchen', label:{b:'Home tablet', s:'shared family screen'}, chrome:'<span>Kitchen · family</span>'}
+    ];
+    let lastKeys = new Set();
+
+    // placement matrix — module × surface
+    function buildMatrix(){
+      const head = `<div></div>` + SURFS.map(s=>`<div class="col-h">${s.col}</div>`).join('');
+      const rows = MODS.map((m,mi)=> `<div class="mname">${m.name}</div>` + SURFS.map(s=>
+        `<div class="pdot${m.on[s.key]?' on':''}${m.lock?' lock':''}" data-m="${mi}" data-s="${s.key}" role="button" aria-pressed="${!!m.on[s.key]}" aria-label="${m.name} on ${s.col}"></div>`
+      ).join('')).join('');
+      place.innerHTML = `<div class="place-head">Choose what shows where</div><div class="place-sub">tap a dot to add or remove a module from a surface</div><div class="place-grid">${head}${rows}</div>`;
+    }
+    place.addEventListener('click', e=>{
+      const d = e.target.closest('.pdot'); if(!d || d.classList.contains('lock')) return;
+      const m = MODS[+d.dataset.m], k = d.dataset.s;
+      m.on[k] = m.on[k] ? 0 : 1;
+      d.classList.toggle('on', !!m.on[k]); d.setAttribute('aria-pressed', String(!!m.on[k]));
+      render();
+    });
+
+    function render(){
+      const newKeys = new Set();
+      lineup.innerHTML = SURFS.map(s=>{
+        const mods = MODS.filter(m=>m.on[s.key]);
+        const cells = mods.map(m=>{
+          const key = s.key+':'+m.id; newKeys.add(key);
+          const cls = 'tile' + ((m.wide && s.dev!=='iphone')?' wide':'') + (m.id==='today'?' core':'') + (!lastKeys.has(key)?' appear':'');
+          return `<div class="${cls}"><div class="tk">${m.icon||''}${m.tk}</div><h5>${m.h}</h5><p>${m.body}</p></div>`;
+        }).join('');
+        return `<div class="col"><div class="device ${s.dev}"><div class="device-chrome">${s.chrome}</div><div class="bento">${cells}</div></div><div class="dev-label"><b>${s.label.b}</b>${s.label.s}</div></div>`;
+      }).join('');
+      lastKeys = newKeys;
+      const counts = SURFS.map(s=>`${s.col} ${MODS.filter(m=>m.on[s.key]).length}`).join(' · ');
+      hint.textContent = `Modules per surface — ${counts}. Defaults shown; tap any dot above to re-arrange.`;
+    }
+    buildMatrix(); render();
+  })();
+</script>
+</body>
+</html>

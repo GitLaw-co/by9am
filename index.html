@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>by9am — wake up superhuman</title>
+<meta name="description" content="by9am is the ambient assistant that works through the night — across every channel, remembering everyone you know, doing the work before you ask. Wake up superhuman. Request early access." />
+<meta property="og:title" content="by9am — wake up superhuman" />
+<meta property="og:description" content="The quiet layer over your whole life. Go to bed behind, wake up ahead. Request early access." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='8' fill='white'/%3E%3Ccircle cx='50' cy='50' r='26' fill='none' stroke='white' stroke-opacity='.5' stroke-width='2'/%3E%3Ccircle cx='50' cy='50' r='44' fill='none' stroke='white' stroke-opacity='.2' stroke-width='2'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050505; --ink:#f5f5f3; --muted:#8a8a86; --faint:#5a5a57;
+    --line:rgba(255,255,255,.10); --line-soft:rgba(255,255,255,.06);
+    --accent:#e8e4dc; --gold:#c2a878; --gold-line:rgba(194,168,120,.30); --glow:rgba(232,228,220,.13);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-weight:400; line-height:1.5; -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility; overflow-x:hidden;
+  }
+  /* ambient background: deep vignette + faint top glow */
+  body::before{
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(900px 520px at 50% -8%, var(--glow), transparent 60%),
+      radial-gradient(1200px 800px at 50% 120%, rgba(255,255,255,.03), transparent 55%);
+  }
+  body::after{
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.5;
+    background:radial-gradient(120% 120% at 50% 0%, transparent 60%, rgba(0,0,0,.7) 100%);
+  }
+  .wrap{position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 28px}
+
+  /* ── nav ── */
+  nav{display:flex; align-items:center; justify-content:space-between; padding:30px 0 0}
+  .brand{display:flex; align-items:center; gap:11px; letter-spacing:.02em}
+  .brand .mark{width:22px; height:22px}
+  .brand b{font-weight:600; font-size:16px; letter-spacing:.04em}
+  .nav-cta{font-size:13px; color:var(--muted); text-decoration:none; border:1px solid var(--line);
+    padding:8px 16px; border-radius:999px; transition:.25s; backdrop-filter:blur(6px)}
+  .nav-cta:hover{color:var(--ink); border-color:rgba(255,255,255,.28)}
+  .nav-right{display:flex; align-items:center; gap:20px}
+  .nav-link{font-size:13px; color:var(--muted); text-decoration:none; letter-spacing:.02em; transition:.25s}
+  .nav-link:hover{color:var(--ink)}
+
+  /* ── hero ── */
+  .hero{position:relative; text-align:center; padding:118px 0 90px; min-height:82vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center}
+  /* concentric ripple rings behind the wordmark */
+  .rings{position:absolute; top:50%; left:50%; width:760px; height:760px;
+    transform:translate(-50%,-58%); z-index:-1; pointer-events:none}
+  .rings span{position:absolute; inset:0; margin:auto; border-radius:50%;
+    border:1px solid rgba(255,255,255,.07); animation:pulse 6.5s ease-out infinite}
+  .rings span:nth-child(1){width:160px;height:160px}
+  .rings span:nth-child(2){width:360px;height:360px; animation-delay:1.3s; border-color:rgba(255,255,255,.05)}
+  .rings span:nth-child(3){width:560px;height:560px; animation-delay:2.6s; border-color:rgba(255,255,255,.035)}
+  .rings span:nth-child(4){width:760px;height:760px; animation-delay:3.9s; border-color:rgba(255,255,255,.025)}
+  @keyframes pulse{0%{opacity:.0; transform:scale(.86)}30%{opacity:1}100%{opacity:0; transform:scale(1.12)}}
+
+  .eyebrow{font-size:11px; letter-spacing:.32em; text-transform:uppercase; color:var(--faint);
+    margin-bottom:30px; font-weight:500}
+  .eyebrow{color:var(--gold)}
+  .eyebrow .dot{display:inline-block; width:5px; height:5px; border-radius:50%;
+    background:var(--gold); box-shadow:0 0 12px var(--gold); margin-right:9px; vertical-align:middle; animation:breathe 3s ease-in-out infinite}
+  @keyframes breathe{0%,100%{opacity:.45}50%{opacity:1}}
+
+  h1{font-family:'Instrument Serif',Georgia,serif; font-weight:400; letter-spacing:-.01em;
+    font-size:clamp(48px,8.5vw,104px); line-height:.98; margin-bottom:26px}
+  h1 .it{font-style:italic; color:var(--accent)}
+  .lede{max-width:600px; font-size:clamp(17px,2.2vw,20px); color:var(--muted); font-weight:300;
+    line-height:1.62; margin:0 auto 42px}
+  .lede b{color:var(--ink); font-weight:500}
+
+  /* ── waitlist form ── */
+  .waitlist{width:100%; max-width:480px; margin:0 auto}
+  .field{display:flex; gap:8px; padding:7px; border:1px solid var(--line);
+    border-radius:14px; background:rgba(255,255,255,.025); backdrop-filter:blur(8px);
+    transition:.25s; box-shadow:0 20px 60px -30px rgba(0,0,0,.9)}
+  .field:focus-within{border-color:rgba(255,255,255,.32); background:rgba(255,255,255,.045)}
+  .field input{flex:1; background:transparent; border:0; outline:0; color:var(--ink);
+    font-family:inherit; font-size:15.5px; padding:0 14px; min-width:0}
+  .field input::placeholder{color:var(--faint)}
+  .field button{flex:none; border:0; cursor:pointer; font-family:inherit; font-weight:600;
+    font-size:14.5px; letter-spacing:.01em; color:#0a0a0a; background:var(--ink);
+    padding:13px 22px; border-radius:9px; transition:.2s}
+  .field button:hover{background:#fff; transform:translateY(-1px); box-shadow:0 10px 30px -12px rgba(255,255,255,.4)}
+  .field button:active{transform:translateY(0)}
+  .field button:disabled{opacity:.6; cursor:default; transform:none; box-shadow:none}
+  .fineprint{font-size:12.5px; color:var(--faint); margin-top:15px; letter-spacing:.01em}
+
+  /* ── waitlist v2: name + email + note, then agent review ── */
+  .wl-form{width:100%; max-width:480px; margin:0 auto}
+  .wl-grid{display:flex; gap:8px}
+  .wl-input{width:100%; background:rgba(255,255,255,.025); border:1px solid var(--line);
+    border-radius:12px; padding:13px 15px; color:var(--ink); font-family:inherit; font-size:15px;
+    outline:0; transition:.25s; min-width:0; backdrop-filter:blur(8px)}
+  .wl-grid .wl-input{flex:1}
+  .wl-input:focus{border-color:rgba(255,255,255,.32); background:rgba(255,255,255,.045)}
+  .wl-input::placeholder{color:var(--faint)}
+  textarea.wl-input{margin-top:8px; resize:none; line-height:1.5; display:block}
+  .wl-submit{width:100%; margin-top:8px; border:0; cursor:pointer; font-family:inherit; font-weight:600;
+    font-size:15px; letter-spacing:.01em; color:#0a0a0a; background:var(--ink); padding:14px; border-radius:12px; transition:.2s}
+  .wl-submit:hover{background:#fff; transform:translateY(-1px); box-shadow:0 10px 30px -12px rgba(255,255,255,.4)}
+  .wl-submit:active{transform:translateY(0)}
+  .wl-submit:disabled{opacity:.7; cursor:default; transform:none; box-shadow:none}
+
+  .analysis{display:none; max-width:480px; margin:0 auto; text-align:left;
+    border:1px solid var(--line); border-radius:16px; padding:24px 24px 20px;
+    background:rgba(255,255,255,.028); backdrop-filter:blur(8px); animation:rise .45s ease both}
+  .analysis.show{display:block}
+  .analysis .ahead{display:flex; align-items:center; gap:11px; margin-bottom:16px}
+  .analysis .pulse{width:11px;height:11px;border-radius:50%;background:var(--gold);
+    box-shadow:0 0 16px var(--gold); animation:breathe 1.3s ease-in-out infinite; flex:none}
+  .analysis .ahead b{font-weight:500; font-size:13.5px; letter-spacing:.01em; color:var(--accent)}
+  .analysis .steps{list-style:none}
+  .analysis .steps li{display:flex; align-items:flex-start; gap:9px; padding:5px 0;
+    font-size:13.5px; font-weight:300; color:var(--muted); opacity:0; transform:translateY(5px);
+    animation:rise .35s ease forwards}
+  .analysis .steps li .ic{color:var(--gold); flex:none; font-size:12px; margin-top:2px}
+  .analysis .steps li.done{color:var(--accent)}
+
+  .verdict{display:none; max-width:480px; margin:0 auto; text-align:center; position:relative; overflow:hidden;
+    border:1px solid var(--gold-line); border-radius:16px; padding:30px 26px;
+    background:linear-gradient(180deg, rgba(194,168,120,.09), rgba(255,255,255,.02));
+    box-shadow:0 30px 90px -50px rgba(0,0,0,.9); animation:rise .5s ease both}
+  .verdict.show{display:block}
+  .verdict .badge{display:inline-flex; align-items:center; gap:7px; font-size:10.5px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--gold); font-weight:600; border:1px solid var(--gold-line);
+    border-radius:999px; padding:7px 14px; margin-bottom:18px}
+  .verdict h3{font-family:'Instrument Serif',serif; font-weight:400; font-size:28px; margin-bottom:11px}
+  .verdict p{color:var(--muted); font-size:14.5px; font-weight:300; line-height:1.62}
+  .verdict p b{color:var(--accent); font-weight:500}
+  /* waitlist outcome — calmer, neutral (not the gold "expedited" treatment) */
+  .verdict.wait{border-color:var(--line); background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.012))}
+  .verdict.wait .badge{color:var(--muted); border-color:var(--line)}
+
+  .success{display:none; max-width:480px; margin:0 auto; text-align:center;
+    border:1px solid var(--line); border-radius:14px; padding:26px 24px;
+    background:rgba(255,255,255,.03); animation:rise .5s ease both}
+  .success .check{width:42px;height:42px;border-radius:50%;margin:0 auto 14px;
+    border:1px solid rgba(154,217,154,.5); display:flex; align-items:center; justify-content:center;
+    color:#9ad99a; font-size:20px; box-shadow:0 0 24px -6px rgba(154,217,154,.4)}
+  .success h3{font-family:'Instrument Serif',serif; font-weight:400; font-size:24px; margin-bottom:6px}
+  .success p{color:var(--muted); font-size:14.5px; font-weight:300}
+  @keyframes rise{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
+
+  /* ── proof strip ── */
+  .channels{display:flex; flex-wrap:wrap; gap:10px 26px; justify-content:center;
+    margin-top:58px; color:var(--faint); font-size:12.5px; letter-spacing:.16em; text-transform:uppercase}
+  .channels span{opacity:.8}
+
+  /* ── features ── */
+  .features{padding:30px 0 110px; display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+    background:var(--line-soft); border:1px solid var(--line-soft); border-radius:18px; overflow:hidden}
+  .feat{background:var(--bg); padding:40px 32px; transition:.3s}
+  .feat:hover{background:#0b0b0a}
+  .feat .n{font-size:11px; letter-spacing:.2em; color:var(--gold); font-weight:500; margin-bottom:20px}
+  .feat h3{font-family:'Instrument Serif',serif; font-weight:400; font-size:25px; margin-bottom:11px; letter-spacing:.01em}
+  .feat p{color:var(--muted); font-size:14.5px; font-weight:300; line-height:1.6}
+
+  /* ── access / exclusivity ── */
+  .access{padding:60px 0 30px}
+  .access-card{max-width:780px; margin:0 auto; text-align:center; position:relative; overflow:hidden;
+    border:1px solid var(--gold-line); border-radius:20px; padding:54px 40px 46px;
+    background:linear-gradient(180deg, rgba(194,168,120,.06), rgba(255,255,255,.015));
+    box-shadow:0 40px 120px -60px rgba(0,0,0,.9)}
+  .access-card .eyebrow{margin-bottom:22px}
+  .access-card h2{font-family:'Instrument Serif',serif; font-weight:400;
+    font-size:clamp(30px,4.6vw,50px); line-height:1.04; letter-spacing:-.01em; margin-bottom:16px}
+  .access-card h2 .it{font-style:italic; color:var(--gold)}
+  .access-card .sub{color:var(--muted); font-weight:300; font-size:16.5px; line-height:1.62;
+    max-width:540px; margin:0 auto}
+  .rules{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin:38px 0 36px;
+    background:var(--line-soft); border:1px solid var(--line-soft); border-radius:14px; overflow:hidden; text-align:left}
+  .rule{background:rgba(8,8,7,.6); padding:24px 22px}
+  .rule .k{font-size:10.5px; letter-spacing:.24em; text-transform:uppercase; color:var(--gold); font-weight:500; margin-bottom:11px}
+  .rule p{color:var(--accent); font-size:14px; font-weight:300; line-height:1.55}
+  .access .field{max-width:480px; margin:0 auto}
+  .access .fineprint{text-align:center}
+  @media (max-width:720px){
+    .access-card{padding:40px 24px 34px}
+    .rules{grid-template-columns:1fr}
+  }
+
+  /* ── closing ── */
+  .closing{text-align:center; padding:40px 0 130px}
+  .closing p{font-family:'Instrument Serif',serif; font-style:italic; font-size:clamp(22px,4vw,34px);
+    color:var(--accent); max-width:680px; margin:0 auto 36px; line-height:1.32}
+  .ghost{display:inline-block; font-size:14px; color:var(--ink); text-decoration:none;
+    border:1px solid var(--line); padding:13px 28px; border-radius:999px; transition:.25s; letter-spacing:.02em}
+  .ghost:hover{border-color:rgba(255,255,255,.32); background:rgba(255,255,255,.04)}
+
+  footer{border-top:1px solid var(--line-soft); padding:30px 0 46px;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+    color:var(--faint); font-size:12.5px}
+  footer a{color:var(--muted); text-decoration:none}
+  footer a:hover{color:var(--ink)}
+
+  /* ── life areas (velocity-style bento) ── */
+  .areas{padding:26px 0 30px}
+  .areas-head{text-align:center; max-width:660px; margin:0 auto 50px}
+  .areas-head .eyebrow{margin-bottom:22px}
+  .areas-head h2{font-family:'Instrument Serif',serif; font-weight:400;
+    font-size:clamp(34px,5.4vw,62px); line-height:1.0; letter-spacing:-.01em; margin-bottom:18px}
+  .areas-head h2 .it{font-style:italic; color:var(--gold)}
+  .areas-head p{color:var(--muted); font-weight:300; font-size:16.5px; line-height:1.62}
+  .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+  .area{position:relative; display:block; overflow:hidden; border-radius:16px; min-height:344px;
+    text-decoration:none; color:var(--ink); background:#0c0c0b; border:1px solid var(--line-soft); isolation:isolate}
+  .area.wide{grid-column:span 2}
+  .area-img{position:absolute; inset:0; z-index:-2; background-size:cover; background-position:center;
+    transform:scale(1.03); transition:transform 1.2s cubic-bezier(.2,.7,.2,1); filter:saturate(.9) brightness(.8)}
+  .area::after{content:''; position:absolute; inset:0; z-index:-1;
+    background:linear-gradient(180deg, rgba(5,5,5,.12) 0%, rgba(5,5,5,.32) 42%, rgba(5,5,5,.92) 100%)}
+  .area:hover .area-img{transform:scale(1.1)}
+  .area-body{position:absolute; left:0; right:0; bottom:0; padding:30px 28px}
+  .area-tag{display:block; font-size:10.5px; letter-spacing:.26em; text-transform:uppercase;
+    color:var(--gold); font-weight:500; margin-bottom:13px}
+  .area-tag i{font-style:normal; opacity:.55; margin-right:8px}
+  .area h3{font-family:'Instrument Serif',serif; font-weight:400; font-size:28px; letter-spacing:.005em}
+  .area p{color:#d2d1cc; font-size:14px; font-weight:300; line-height:1.55; max-width:48ch;
+    margin-top:10px; opacity:0; transform:translateY(8px); max-height:0; overflow:hidden;
+    transition:opacity .45s ease, transform .45s ease, max-height .45s ease}
+  .area:hover p, .area:focus-visible p{opacity:1; transform:none; max-height:140px}
+  @media (hover:none){ .area p{opacity:1; transform:none; max-height:140px} }
+
+  /* ── work ⇄ life toggle ── */
+  .area-toggle{display:inline-flex; gap:4px; padding:5px; margin-top:8px;
+    border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.025); backdrop-filter:blur(6px)}
+  .area-toggle button{border:0; background:transparent; color:var(--muted); font-family:inherit;
+    font-size:13px; letter-spacing:.05em; padding:9px 22px; border-radius:999px; cursor:pointer; transition:.22s}
+  .area-toggle button:hover{color:var(--ink)}
+  .area-toggle button[aria-selected="true"]{background:var(--ink); color:#0a0a0a; font-weight:500}
+  .grid .area{animation:cardin .5s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes cardin{from{opacity:0; transform:translateY(10px) scale(.99)}to{opacity:1; transform:none}}
+  @media (prefers-reduced-motion:reduce){.grid .area{animation:none}}
+
+  @media (max-width:720px){
+    .grid{grid-template-columns:1fr}
+    .area.wide{grid-column:auto}
+    .area{min-height:300px}
+    .area p{opacity:1; transform:none; max-height:160px}
+    .features{grid-template-columns:1fr}
+    .hero{padding:84px 0 60px; min-height:auto}
+    .field{flex-direction:column}
+    .field button{padding:14px}
+    nav{padding:22px 0 0}
+  }
+  @media (prefers-reduced-motion:reduce){.rings span,.eyebrow .dot{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav>
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="7" fill="#f5f5f3"/>
+        <circle cx="50" cy="50" r="24" fill="none" stroke="#f5f5f3" stroke-opacity=".45" stroke-width="2"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#f5f5f3" stroke-opacity=".18" stroke-width="2"/>
+      </svg>
+      <b>ECHO</b>
+    </div>
+    <div class="nav-right">
+      <a class="nav-link" href="faq.html">How it works</a>
+      <a class="nav-link" href="family-hub.html">Family Space</a>
+      <a class="nav-link" href="demo.html">Live demo</a>
+      <a class="nav-link" href="components.html">Building blocks</a>
+      <a class="nav-link" href="blog.html">Blog</a>
+      <a class="nav-cta" href="#waitlist">Request access</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="rings" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <div class="eyebrow"><span class="dot"></span>Private beta · limited seats</div>
+    <h1>Wake up<br><span class="it">superhuman.</span></h1>
+    <p class="lede">by9am is the quiet layer over <b>your work and your life</b>. It runs through the night — on every channel you use, clearing the inbox, prepping the meeting, remembering everyone you know, doing the work <b>before you ask</b>. You wake up ahead, not staring at another chatbot.</p>
+
+    <div id="waitlist" class="waitlist">
+      <!-- FormSubmit.co relay → emails go straight to Nick. No account/key needed.
+           One-time: click the activation link FormSubmit emails on the first real submission.
+           On submit, by9am's agent runs an (illustrative, client-side) profile review, then expedites. -->
+      <form id="wl-form" class="wl-form" action="" method="POST" novalidate>
+        <input type="hidden" name="_subject" value="by9am — new waitlist request" />
+        <input type="hidden" name="form_type" value="waitlist" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <div class="wl-grid">
+          <input id="wl-name" class="wl-input" type="text" name="name" required autocomplete="name"
+                 placeholder="Your name" aria-label="Your name" />
+          <input id="wl-email" class="wl-input" type="email" name="email" required autocomplete="email"
+                 placeholder="you@where-you-work.com" aria-label="Email address" />
+        </div>
+        <textarea id="wl-note" class="wl-input" name="note" rows="2" maxlength="280"
+                  placeholder="One line — who are you, and why by9am?" aria-label="Who are you and why by9am"></textarea>
+        <button type="submit" class="wl-submit" id="wl-btn">Request access</button>
+        <p class="fineprint">Every request is read and reviewed before an invite goes out. No spam — ever.</p>
+      </form>
+
+      <!-- live "agent reviewing" sequence -->
+      <div id="wl-analysis" class="analysis" role="status" aria-live="polite">
+        <div class="ahead"><span class="pulse"></span><b>by9am's agent is reviewing your profile…</b></div>
+        <ul class="steps" id="wl-steps"></ul>
+      </div>
+
+      <!-- verdict -->
+      <div id="wl-verdict" class="verdict" role="status">
+        <span class="badge" id="wl-badge">✦ Expedited access</span>
+        <h3 id="wl-verdict-h">You're in.</h3>
+        <p id="wl-verdict-p"></p>
+      </div>
+    </div>
+
+    <div class="channels">
+      <span>Telegram</span><span>WhatsApp</span><span>Slack</span><span>Email</span><span>Signal</span><span>Voice</span>
+    </div>
+  </header>
+
+  <section class="features">
+    <div class="feat">
+      <div class="n">01 — AMBIENT</div>
+      <h3>On every channel</h3>
+      <p>Message it on Telegram, WhatsApp, Slack, email or voice — it's the same assistant, with the same memory, wherever you are. No app to open. It comes to you.</p>
+    </div>
+    <div class="feat">
+      <div class="n">02 — MEMORY</div>
+      <h3>Remembers everything</h3>
+      <p>Every person you meet, every promise you make, every thread left open. by9am keeps the context you can't — and surfaces it the moment it matters.</p>
+    </div>
+    <div class="feat">
+      <div class="n">03 — AGENCY</div>
+      <h3>Does the work</h3>
+      <p>Drafts the reply, books the time, prepares the brief, chases the follow-up. by9am acts on your behalf and shows you the result — you stay in command, not in the weeds.</p>
+    </div>
+  </section>
+
+  <section class="areas">
+    <div class="areas-head">
+      <div class="eyebrow"><span class="dot"></span>What by9am handles</div>
+      <h2>One assistant. <span class="it">Work and life.</span></h2>
+      <p>Not a single skill bolted onto a chatbot — one mind across both halves of your day, with the same memory whether you're closing a deal or planning the weekend.</p>
+      <div class="area-toggle" role="tablist" aria-label="Switch between work and life">
+        <button role="tab" data-mode="work" aria-selected="true">Work</button>
+        <button role="tab" data-mode="life" aria-selected="false">Life</button>
+        <button role="tab" data-mode="all" aria-selected="false">All</button>
+      </div>
+    </div>
+
+    <div class="grid" id="area-grid"></div>
+  </section>
+
+  <section class="access" id="access">
+    <div class="access-card">
+      <div class="eyebrow"><span class="dot"></span>By nomination</div>
+      <h2>Access is <span class="it">earned, not bought.</span></h2>
+      <p class="sub">by9am is invite-only. New members are usually nominated by someone already inside — and every seat is given the time to be set up properly.</p>
+
+      <div class="rules">
+        <div class="rule">
+          <div class="k">Nominated in</div>
+          <p>Most new members arrive through an existing one. Know someone with by9am? Ask them to put your name forward.</p>
+        </div>
+        <div class="rule">
+          <div class="k">Members first</div>
+          <p>Most onboarding sessions are reserved for members and the people they bring. by9am is set up with you, one to one — not handed over cold.</p>
+        </div>
+        <div class="rule">
+          <div class="k">Or apply</div>
+          <p>No invite yet? Apply below. A few seats open each wave, and we read every request by hand.</p>
+        </div>
+      </div>
+
+      <form id="apply-form" action="" method="POST" novalidate>
+        <input type="hidden" name="_subject" value="by9am — new access application" />
+        <input type="hidden" name="form_type" value="application" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <div class="field">
+          <input id="apply-email" type="email" name="email" required autocomplete="email"
+                 placeholder="you@where-you-work.com" aria-label="Email address" />
+          <button type="submit" id="apply-btn">Apply for access</button>
+        </div>
+        <p class="fineprint">Tell us who nominated you in the first reply, if anyone did — it moves you up the list. New here? <a href="faq.html" style="color:var(--muted); text-decoration:underline">How by9am works →</a></p>
+        <p class="fineprint">Membership starts at $10/mo in beta — the by9am core itself is free and open. The optional <a href="family-hub.html" style="color:var(--muted); text-decoration:underline">Family Hub</a> wall tablet is £279 one-time.</p>
+      </form>
+      <div id="apply-done" class="success" role="status" style="margin-top:18px">
+        <div class="check">✓</div>
+        <h3>Application received.</h3>
+        <p>If a seat opens in your wave, you'll hear from us directly.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing">
+    <p>“Go to bed behind. Wake up ahead.”</p>
+    <a class="ghost" href="#waitlist">Request early access →</a>
+  </section>
+
+  <footer>
+    <span>by9am — early access.</span>
+    <span><a href="faq.html">How it works</a> · <a href="family-hub.html">Family Space</a> · <a href="demo.html">Live demo</a> · <a href="components.html">Building blocks</a> · <a href="blog.html">Blog</a> · <a href="#waitlist">Join the waitlist</a> · <span id="yr"></span></span>
+  </footer>
+
+</div>
+
+<script>
+  // ── life-areas bento: data-driven so the Work ⇄ Life toggle can swap card sets ──
+  const AREAS = [
+    // shared — by9am's one short list spans both halves of your day
+    { mode:'both', wide:true, tag:'Priorities', h:'The short list that matters',
+      p:"Your chief of staff for the day. by9am reads everything coming at you — inbox, meetings, messages, open loops — and hands you the few things that truly matter. It closes what's done and chases what's slipping, so nothing quietly rots.",
+      img:'https://images.unsplash.com/photo-1711030239027-4ee82270f3f8?auto=format&fit=crop&w=1500&q=80' },
+
+    // work
+    { mode:'work', tag:'Inbox', h:'Inbox to zero, in your voice',
+      p:'by9am reads every thread, drafts the replies that sound like you, and surfaces only what needs your call. You approve; it sends.',
+      img:'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1100&q=80' },
+    { mode:'work', tag:'Meetings', h:'Briefed before, captured after',
+      p:'A one-page brief lands before every meeting — who, why, what moved last time. Notes, decisions and follow-ups land after, already chased.',
+      img:'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1100&q=80' },
+    { mode:'work', tag:'Projects', h:"What's moving, what's slipping",
+      p:'Every deliverable and deadline held in one view. by9am flags what’s drifting before it’s late and nudges the people it’s waiting on.',
+      img:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1100&q=80' },
+    { mode:'work', tag:'Team', h:'Be an elite manager',
+      p:'1:1s prepped, who’s blocked surfaced, what each person is carrying remembered — so you lead from context, not from your inbox.',
+      img:'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1100&q=80' },
+    { mode:'work', tag:'Research', h:'Research done overnight',
+      p:'Hand it a company, a market, a name. You wake up to a tight, sourced briefing — the reading already done, the signal pulled from the noise.',
+      img:'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&w=1100&q=80' },
+    { mode:'work', tag:'Finance', h:'Expenses and numbers, handled',
+      p:'Receipts filed, expenses reconciled, the figures that matter read back to you — no spreadsheet wrangling, no month-end scramble.',
+      img:'https://images.unsplash.com/photo-1543286386-713bdd548da4?auto=format&fit=crop&w=1100&q=80' },
+
+    // life
+    { mode:'life', tag:'Travel', h:'Where you go next',
+      p:'From a weekend away to the family summer — flights, stays and an itinerary everyone actually wants. It plans it; you approve it.',
+      img:'https://images.unsplash.com/photo-1549294413-26f195200c16?auto=format&fit=crop&w=1100&q=80' },
+    { mode:'life', tag:'Dining', h:'The right table',
+      p:'Booked before you ask. It remembers the places you loved — and who you were with.',
+      img:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1100&q=80' },
+    { mode:'life', tag:'Family', h:'Holding it together',
+      p:"The family calendar, the kids' activities, the weekend plans — kept in one place so nothing slips.",
+      img:'https://images.unsplash.com/photo-1742522450616-a2cf0cba1274?auto=format&fit=crop&w=1100&q=80' },
+    { mode:'life', tag:'Health', h:'Quietly on track',
+      p:'Training, sleep and weight tracked in the background; the habit nudged; the trend read back to you each week.',
+      img:'https://images.unsplash.com/photo-1571008887538-b36bb32f4571?auto=format&fit=crop&w=1100&q=80' },
+    { mode:'life', tag:'Experiences', h:'Worth leaving home for',
+      p:'The concert, the exhibition, the thing to do this weekend — matched to your time and the weather.',
+      img:'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=1100&q=80' },
+    { mode:'life', tag:'Watchlist', h:'Your next favourite, found',
+      p:'The next film, series or book — picked from what you and your family have actually loved. Invite everyone in to collaborate, and by9am finds the thing you’ll all agree on.',
+      img:'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1100&q=80' },
+    { mode:'life', tag:'Shopping', h:'The right gift, on time',
+      p:'Every gift idea for the people who matter, remembered — and surfaced before the date arrives.',
+      img:'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1100&q=80' },
+    { mode:'life', tag:'Finances', h:'Your money, working harder',
+      p:'by9am watches the whole picture — tax, pensions, subscriptions, what’s sitting idle — and flags the moves worth making, from the allowance you’re about to waste to the bill you’re overpaying.',
+      img:'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1100&q=80' },
+    { mode:'life', tag:'Relationships', h:'Everyone you know, remembered',
+      p:'Their family, their story, the promise you made. by9am keeps the context you can’t — and reminds you when it’s time to follow up.',
+      img:'https://images.unsplash.com/photo-1519671282429-b44660ead0a7?auto=format&fit=crop&w=1100&q=80' },
+  ];
+
+  const grid = document.getElementById('area-grid');
+  const toggle = document.querySelector('.area-toggle');
+
+  function renderAreas(mode){
+    const visible = AREAS.filter(a => mode === 'all' ? true : (a.mode === mode || a.mode === 'both'));
+    grid.innerHTML = visible.map((a, i) => `
+      <a class="area${a.wide ? ' wide' : ''}" href="#waitlist" style="animation-delay:${i*55}ms">
+        <div class="area-img" style="background-image:url('${a.img}')"></div>
+        <div class="area-body">
+          <span class="area-tag"><i>${String(i+1).padStart(2,'0')}</i>${a.tag}</span>
+          <h3>${a.h}</h3>
+          <p>${a.p}</p>
+        </div>
+      </a>`).join('');
+  }
+
+  toggle.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-mode]');
+    if(!btn) return;
+    toggle.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', String(b === btn)));
+    renderAreas(btn.dataset.mode);
+  });
+
+  renderAreas('work'); // work-first by default
+
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // Real AI gate. Paste your deployed Cloudflare Worker URL here (see gate/).
+  // Leave empty → the page falls back to a local "always expedite" animation.
+  const AGENT_ENDPOINT = '';
+  // ───────────────────────────────────────────────────────────────────────────
+
+  const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  const esc = (s) => { const d = document.createElement('div'); d.textContent = String(s == null ? '' : s); return d.innerHTML; };
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  // Lead endpoint assembled at runtime so the address isn't scrapeable from page source.
+  // Swap for a Formspree form id (https://formspree.io) to hide it entirely.
+  const LEAD_ENDPOINT = 'https://formsubmit.co/ajax/' + ['hello', 'by9am.com'].join('@');
+  for (const id of ['wl-form', 'apply-form']) {
+    const f = document.getElementById(id);
+    if (f) f.setAttribute('action', LEAD_ENDPOINT);
+  }
+
+  function postLead(formEl){
+    const endpoint = formEl.getAttribute('action');
+    if(!endpoint) return;
+    try{ fetch(endpoint, { method:'POST', headers:{'Accept':'application/json'}, body:new FormData(formEl) }); }
+    catch(e){ /* prototype shouldn't dead-end */ }
+  }
+  // send the lead to FormSubmit WITH the AI's decision, so Nick sees every call the agent made
+  function sendLeadWithVerdict(formEl, lead, v){
+    const endpoint = formEl.getAttribute('action');
+    if(!endpoint) return;
+    const fd = new FormData();
+    fd.append('name', lead.name);
+    fd.append('email', lead.email);
+    fd.append('note', lead.note || '');
+    fd.append('ai_decision', v ? v.decision : 'expedited (local fallback)');
+    fd.append('ai_reason', v && v.reason ? v.reason : '');
+    if(v && v.signals && v.signals.length) fd.append('ai_signals', v.signals.join(', '));
+    fd.append('form_type', 'waitlist');
+    fd.append('_subject', `by9am — ${(v ? v.decision : 'expedited').toUpperCase()}: ${lead.name}`);
+    fd.append('_template', 'table');
+    try{ fetch(endpoint, { method:'POST', headers:{'Accept':'application/json'}, body:fd }); }catch(e){}
+  }
+  function remember(addr){
+    try{
+      const list = JSON.parse(localStorage.getItem('echo_waitlist') || '[]');
+      if(addr && !list.includes(addr)){ list.push(addr); localStorage.setItem('echo_waitlist', JSON.stringify(list)); }
+    }catch(e){}
+  }
+
+  // call the gate; returns {decision,headline,reason,signals} or null (→ caller falls back to expedite)
+  async function reviewProfile(lead){
+    if(!AGENT_ENDPOINT) return null;
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 30000);
+    try{
+      const r = await fetch(AGENT_ENDPOINT, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(lead), signal: ctrl.signal,
+      });
+      clearTimeout(t);
+      if(!r.ok) return null;
+      const v = await r.json();
+      if(!v || (v.decision !== 'expedited' && v.decision !== 'waitlist')) return null;
+      return v;
+    }catch(e){ clearTimeout(t); return null; }
+  }
+
+  // ── hero: collect name + email + note, run the real review, render the verdict ──
+  (function heroFlow(){
+    const form = document.getElementById('wl-form');
+    const nameEl = document.getElementById('wl-name');
+    const emailEl = document.getElementById('wl-email');
+    const noteEl = document.getElementById('wl-note');
+    const analysis = document.getElementById('wl-analysis');
+    const stepsEl = document.getElementById('wl-steps');
+    const verdict = document.getElementById('wl-verdict');
+    const badge = document.getElementById('wl-badge');
+    const verdictH = document.getElementById('wl-verdict-h');
+    const verdictP = document.getElementById('wl-verdict-p');
+    if(!form) return;
+
+    const flash = (el) => { el.focus(); el.style.borderColor = 'rgba(220,80,80,.6)';
+      setTimeout(() => el.style.borderColor = '', 1500); };
+
+    function addStep(text, done){
+      const li = document.createElement('li');
+      li.innerHTML = `<span class="ic">${done ? '✓' : '›'}</span><span>${esc(text)}</span>`;
+      if(done) li.classList.add('done');
+      stepsEl.appendChild(li);
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = nameEl.value.trim();
+      const addr = emailEl.value.trim();
+      const note = noteEl.value.trim();
+      if(!name){ flash(nameEl); return; }
+      if(!emailRe.test(addr)){ flash(emailEl); return; }
+
+      const first = name.split(/\s+/)[0];
+      const domain = addr.split('@')[1] || '';
+      const lead = { name, email: addr, note };
+      remember(addr);
+
+      // swap form → live analysis
+      form.style.display = 'none';
+      analysis.classList.add('show');
+
+      // kick off the real review immediately, animate the research steps in parallel
+      const verdictPromise = reviewProfile(lead);
+      const baseSteps = [
+        note ? 'Reading your note…' : 'Opening your request…',
+        `Searching the public web for “${name}”…`,
+        domain ? `Cross-referencing ${domain}…` : 'Checking your background…',
+        'Scoring fit against Nick’s criteria…',
+      ];
+      for(const s of baseSteps){ addStep(s, false); await wait(560); }
+
+      // wait for the genuine verdict (steps keep the panel "alive" while we wait)
+      const v = await verdictPromise;            // null → fall back to expedite
+      const decision = v ? v.decision : 'expedited';
+
+      addStep(decision === 'expedited'
+        ? 'Match: strong — flagging for expedited access.'
+        : 'Reviewed — added to the waitlist.', true);
+      await wait(700);
+
+      // record the lead with the decision attached
+      sendLeadWithVerdict(form, lead, v);
+
+      // render the verdict
+      analysis.classList.remove('show');
+      const aiReason = v && v.reason ? esc(v.reason) : '';
+      if(decision === 'expedited'){
+        verdict.classList.remove('wait');
+        badge.textContent = '✦ Expedited access';
+        verdictH.textContent = (v && v.headline) ? v.headline : `You’re in, ${first}.`;
+        verdictP.innerHTML = (aiReason ? aiReason + ' ' : `Nick’s by9am agent reviewed your profile and fast-tracked you. `)
+          + `Your personal invite is on its way to <b>${esc(addr)}</b>.`;
+      } else {
+        verdict.classList.add('wait');
+        badge.textContent = 'On the waitlist';
+        verdictH.textContent = (v && v.headline) ? v.headline : `You’re on the list, ${first}.`;
+        verdictP.innerHTML = (aiReason ? aiReason + ' ' : `Thanks, ${esc(first)} — you’re on the waitlist. `)
+          + `We’ll be in touch the moment a seat opens in your wave.`;
+      }
+      verdict.classList.add('show');
+    });
+  })();
+
+  // ── access/apply form: simple confirm ──
+  (function applyFlow(){
+    const form = document.getElementById('apply-form');
+    const emailEl = document.getElementById('apply-email');
+    const btn = document.getElementById('apply-btn');
+    const done = document.getElementById('apply-done');
+    if(!form) return;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const addr = emailEl.value.trim();
+      if(!emailRe.test(addr)){ emailEl.focus(); form.querySelector('.field').style.borderColor = 'rgba(220,80,80,.6)'; return; }
+      btn.disabled = true; btn.textContent = 'Applying…';
+      postLead(form); remember(addr);
+      form.style.display = 'none';
+      done.style.display = 'block';
+    });
+  })();
+</script>
+</body>
+</html>
